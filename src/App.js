@@ -1,25 +1,667 @@
-import logo from './logo.svg';
 import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+import { useState, useEffect, useRef } from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import YourSongs from './pages/YourSongs';
+import NotFound from './pages/NotFound';
+import Modal from './pages/Modal';
+import { initVisualizer } from './functions/visualizer';
+import { FaPlay, FaPause } from 'react-icons/fa';
+import { is } from 'bluebird';
+const App = () => {
+  let initYourSongOrder = JSON.parse(localStorage.getItem('songs'));
+  initYourSongOrder ||= [];
+  const [mySongs, setMySongs] = useState([]);
+  const [playAll, setPlayAll] = useState(true);
+  const [isPlaying, setPlaying] = useState(null); // audio object
+  const [filters, setFilter] = useState([]);
+  const [showModal, setModal] = useState(false);
+  const [curSort, setSort] = useState('quality');
+  const [yourSongs, setYourSongs] = useState(
+    mySongs.filter((song) => song.inYourSongs === true)
   );
-}
+  const [bucket, setBucket] = useState('my-song-bucket');
+  const [yourSongOrder, setYourSongOrder] = useState(initYourSongOrder);
+  const [volume, setVolume] = useState(0.64);
+  const [showDownloadModal, setDownloadModal] = useState(false);
+
+  useEffect(() => {
+    if (isPlaying != null) {
+      isPlaying.volume = volume;
+    }
+  }, [volume, isPlaying]);
+
+  useEffect(() => {
+    const getSongs = async () => {
+      // PRODUCTION /*******************DO NOT DELETE ***************/
+      const res = await fetch('db.json');
+      const data = await res.json();
+      initSort(data.songs);
+      findFilters(data.songs);
+
+      // LOCAL - don't forget to start the server: npm run server - optional: comment out initVisualizer to avoid CORS isses
+      // const res = await fetch('http://localhost:5000/songs');
+      // const data = await res.json();
+      // initSort(data);
+      // findFilters(data);
+    };
+
+    getSongs();
+  }, []);
+
+  useEffect(() => {
+    const getYourSongs = mySongs.filter((song) => song.inYourSongs === true);
+    setYourSongs(getYourSongs);
+    if (
+      bucket === 'my-song-bucket' &&
+      mySongs.filter((song) => song.playStatus === 'yes').length > 0 &&
+      document.querySelector('.active-song') != null
+    ) {
+      scrollToSong();
+    }
+  }, [mySongs]);
+
+  useEffect(() => {
+    if (yourSongOrder != null) {
+      localStorage.setItem('songs', JSON.stringify(yourSongOrder));
+    }
+  }, [yourSongOrder]);
+
+  // current state of my songs - including after sorting
+  const mySongRef = useRef({});
+  mySongRef.current = mySongs;
+
+  const playAllRef = useRef({});
+  playAllRef.current = playAll;
+
+  const curYourSongOrder = useRef({});
+  curYourSongOrder.current = yourSongOrder;
+
+  const setSorting = (newSort) => {
+    // if (isPlaying != null) {
+    //   //isPlaying.pause();
+    // }
+    switch (newSort) {
+      case 'alpha':
+        setMySongs((song) => [
+          ...song.sort(function (a, b) {
+            if (a.title < b.title) {
+              return -1;
+            }
+            if (a.title > b.title) {
+              return 1;
+            }
+          }),
+        ]);
+        setSort('alpha');
+        playingSort();
+
+        break;
+      case 'quality':
+        setMySongs((song) => [
+          ...song.sort(function (a, b) {
+            if (a.quality < b.quality) {
+              return -1;
+            }
+            if (a.quality > b.quality) {
+              return 1;
+            }
+          }),
+        ]);
+        setSort('quality');
+        playingSort();
+        break;
+      case 'tags':
+        setMySongs((song) => [
+          ...song.sort(function (a, b) {
+            if (a.tags < b.tags) {
+              return -1;
+            }
+            if (a.tags > b.tags) {
+              return 1;
+            }
+          }),
+        ]);
+        setSort('tags');
+        playingSort();
+        break;
+      case 'random':
+        setMySongs((song) => [
+          ...song.sort(function () {
+            let aRan = Math.random();
+            let bRan = Math.random();
+            if (aRan < bRan) {
+              return -1;
+            }
+            if (aRan > bRan) {
+              return 1;
+            }
+          }),
+        ]);
+        setSort('random');
+        playingSort();
+        break;
+      default:
+      // for the sake of compliance...meh;
+    }
+  };
+
+  const playingSort = () => {
+    if (isPlaying != null) {
+      const getCurSongId = Number(isPlaying.id.replace('audio', ''));
+      const getCurSong = mySongs.filter((song) => song.id === getCurSongId)[0];
+      isPlaying.onended = (e) =>
+        songEnded(getCurSong, playAllRef, curYourSongOrder);
+    }
+  };
+
+  useEffect(() => {
+    setMySongs(
+      mySongs.map((song) =>
+        updateMySongs(filters, song) === true
+          ? { ...song, showSong: true }
+          : { ...song, showSong: false }
+      )
+    );
+    // if (isPlaying != null) {
+    //   // isPlaying.pause();
+    // }
+  }, [filters]);
+
+  const initSort = (data) => {
+    setMySongs(
+      data.sort(function (a, b) {
+        if (a.quality < b.quality) {
+          return -1;
+        }
+        if (a.quality > b.quality) {
+          return 1;
+        }
+        return 0;
+      })
+    );
+  };
+
+  // const initSelected = (data) => {
+  //   debugger;
+  //   const existingSelected = JSON.parse(localStorage.getItem('songs'));
+  //   setMySongs(
+  //     mySongs.map((song) =>
+  //       existingSelected.filter((sel) => sel === song.id).length > 0
+  //         ? { ...song, inYourSongs: true }
+  //         : { ...song }
+  //     )
+  //   );
+  // };
+
+  const findFilters = (filterData) => {
+    const qual = [];
+    const style = [];
+    filterData.map((song) => qual.push(song.quality));
+    filterData.map((song) => {
+      song.tags.indexOf(',') > 0
+        ? song.tags.split(',').map((type) => style.push(type))
+        : style.push(song.tags);
+    });
+
+    const filterQual = [...new Set(qual)];
+    const filterStyle = [...new Set(style)];
+    const finalarr = [];
+    for (let g of filterQual) {
+      let showFilter = true;
+      if (g === 'un-produced') {
+        showFilter = false;
+      }
+      let ids = finalarr.map((i) => parseInt(`${i.id}`));
+      ids = ids.map((j) => Number(j));
+      const id = finalarr.length === 0 ? 1 : Math.max(...ids) + 1;
+      finalarr.push({ id: id, name: g, checked: showFilter, type: 'quality' });
+    }
+    for (let t of filterStyle) {
+      let showFilter = true;
+      if (t === 'classical' || t === 'electronic') {
+        showFilter = false;
+      }
+      let ids = finalarr.map((i) => parseInt(`${i.id}`));
+      ids = ids.map((j) => Number(j));
+      const id = finalarr.length === 0 ? 1 : Math.max(...ids) + 1;
+      finalarr.push({ id: id, name: t, checked: showFilter, type: 'genre' });
+    }
+    setFilter(finalarr);
+  };
+
+  const updateMySongs = (filters, song) => {
+    let tagStatus = false;
+    let qualStatus = false;
+    let tags = song.tags.split(',');
+    for (const value of tags) {
+      for (const key in filters) {
+        if (filters[key].name === value && filters[key].checked === true) {
+          tagStatus = true;
+        }
+      }
+    }
+    let quality = song.quality;
+    for (const key in filters) {
+      if (filters[key].name === quality && filters[key].checked === true) {
+        qualStatus = true;
+      }
+    }
+
+    if (tagStatus === true && qualStatus === true) {
+      return true;
+    }
+  };
+
+  const toggleFilter = (id, isChecked) => {
+    setFilter(
+      filters.map((filter) =>
+        filter.id === id ? { ...filter, checked: !isChecked } : filter
+      )
+    );
+    if (isPlaying != null) {
+      setPlayAll(false);
+    }
+  };
+
+  const scrollToSong = () => {
+    const scrollSong = document.querySelector('.active-song');
+    scrollSong.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  // SONG FUNCTIONS: startUp, rewind, pausePlaying, nextSong, songEnded
+  const rewind = (clickedSong) => {
+    isPlaying.pause();
+    let _song2Play = new Audio(
+      'https://www.chrishowardsongs.com/music-bucket/' + clickedSong.url
+    );
+    setPlaying(_song2Play);
+    _song2Play.id = 'audio' + clickedSong.id;
+    _song2Play.onended = (e) =>
+      songEnded(clickedSong, playAllRef, curYourSongOrder);
+    _song2Play.play();
+    setMySongs(
+      mySongs.map((song) =>
+        song.id === clickedSong.id ? { ...song, playStatus: 'yes' } : song
+      )
+    );
+    if (bucket === 'your-song-bucket') {
+      initVisualizer(_song2Play, true);
+      _song2Play.volume = volume;
+    }
+  };
+
+  const nextSongFn = (lastSong, curYourSongOrder) => {
+    if (bucket === 'my-song-bucket') {
+      if (isPlaying != null) {
+        isPlaying.pause();
+      }
+      const nextSongList = mySongs.filter((song) => song.showSong === true);
+      const findCurSong = nextSongList
+        .map(function (e) {
+          return e.id;
+        })
+        .indexOf(lastSong.id);
+      let newSong = nextSongList[findCurSong + 1];
+      if (findCurSong === nextSongList.length - 1) {
+        newSong = nextSongList[0];
+      }
+      let _song2Play = new Audio(
+        'https://www.chrishowardsongs.com/music-bucket/' + newSong.url
+      );
+      setPlaying(_song2Play);
+      _song2Play.id = 'audio' + newSong.id;
+      _song2Play.onended = (e) =>
+        songEnded(newSong, playAllRef, curYourSongOrder);
+      _song2Play.play();
+      setMySongs(
+        mySongs.map((song) =>
+          song.id === newSong.id
+            ? curYourSongOrder.current.filter((num) => num === song.id).length >
+              0
+              ? { ...song, playStatus: 'yes', inYourSongs: true }
+              : { ...song, playStatus: 'yes' }
+            : curYourSongOrder.current.filter((num) => num === song.id).length >
+              0
+            ? { ...song, playStatus: 'no', inYourSongs: true }
+            : { ...song, playStatus: 'no' }
+        )
+      );
+    } else {
+      if (isPlaying != null) {
+        isPlaying.pause();
+      }
+      const lastSongIndex = curYourSongOrder.current.indexOf(lastSong.id);
+      // get next song in yourSongs
+      let newSong = null;
+      if (lastSongIndex + 1 === curYourSongOrder.current.length) {
+        newSong = mySongs.filter(
+          (song) => song.id === curYourSongOrder.current[0]
+        );
+      } else {
+        newSong = mySongs.filter(
+          (song) => song.id === curYourSongOrder.current[lastSongIndex + 1]
+        );
+      }
+      newSong = newSong[0];
+      let _song2Play = new Audio(
+        'https://www.chrishowardsongs.com/music-bucket/' + newSong.url
+      );
+      setPlaying(_song2Play);
+      _song2Play.id = 'audio' + newSong.id;
+      _song2Play.onended = (e) =>
+        songEnded(newSong, playAllRef, curYourSongOrder);
+      _song2Play.play();
+      setMySongs(
+        mySongs.map((song) =>
+          song.id === newSong.id
+            ? { ...song, playStatus: 'yes' }
+            : { ...song, playStatus: 'no' }
+        )
+      );
+      initVisualizer(_song2Play, true);
+      _song2Play.volume = volume;
+    }
+  };
+
+  const startUp = (clickedSong, time) => {
+    const isPlaying2 = mySongs.filter((song) => song.playStatus === 'yes');
+    const isPaused = mySongs.filter((song) => song.playStatus === 'paused');
+    let _song2Play = null;
+    if (time) {
+      isPlaying.onended = (e) =>
+        songEnded(clickedSong, playAllRef, curYourSongOrder);
+    } else {
+      if (isPlaying2.length === 0 && isPaused.length === 0) {
+        // nothing is playing or paused
+        _song2Play = new Audio(
+          'https://www.chrishowardsongs.com/music-bucket/' + clickedSong.url
+        );
+        setPlaying(_song2Play);
+        _song2Play.id = 'audio' + clickedSong.id;
+        _song2Play.onended = (e) =>
+          songEnded(clickedSong, playAllRef, curYourSongOrder);
+        _song2Play.play();
+        setMySongs(
+          mySongs.map((song) =>
+            song.id === clickedSong.id ? { ...song, playStatus: 'yes' } : song
+          )
+        );
+        if (bucket === 'your-song-bucket') {
+          initVisualizer(_song2Play, true);
+          _song2Play.volume = volume;
+        }
+      } else {
+        // there is something playing or paused, let's find out what it is
+        if (isPaused.length > 0) {
+          // something was paused...is it the clicked song?
+          if (
+            mySongs.filter((song) => song.playStatus === 'paused')[0].id ===
+            clickedSong.id
+          ) {
+            isPlaying.play();
+            if (bucket === 'your-song-bucket') {
+              _song2Play = isPlaying;
+              initVisualizer(_song2Play, false);
+              _song2Play.volume = volume;
+            }
+            setMySongs(
+              mySongs.map((song) =>
+                song.id === isPaused.id
+                  ? { ...song, playStatus: 'yes' }
+                  : { ...song, playStatus: 'no' }
+              )
+            );
+          } else {
+            setPlaying(null);
+            _song2Play = new Audio(
+              'https://www.chrishowardsongs.com/music-bucket/' + clickedSong.url
+            );
+            setPlaying(_song2Play);
+            _song2Play.id = 'audio' + clickedSong.id;
+            _song2Play.onended = (e) =>
+              songEnded(clickedSong, playAllRef, curYourSongOrder);
+            _song2Play.play();
+          }
+          setMySongs(
+            mySongs.map((song) =>
+              song.id === clickedSong.id
+                ? { ...song, playStatus: 'yes' }
+                : { ...song, playStatus: 'no' }
+            )
+          );
+        } else {
+          // it must be a whole new song that was clicked on
+          if (isPlaying != null) {
+            isPlaying.pause();
+          }
+          setPlaying(null);
+          _song2Play = new Audio(
+            'https://www.chrishowardsongs.com/music-bucket/' + clickedSong.url
+          );
+          setPlaying(_song2Play);
+          _song2Play.id = 'audio' + clickedSong.id;
+          _song2Play.onended = (e) =>
+            songEnded(clickedSong, playAllRef, curYourSongOrder);
+          _song2Play.play();
+          setMySongs(
+            mySongs.map((song) =>
+              song.id === clickedSong.id
+                ? { ...song, playStatus: 'yes' }
+                : { ...song, playStatus: 'no' }
+            )
+          );
+        }
+      }
+    }
+  };
+
+  const pausePlaying = (clickedSong) => {
+    isPlaying.pause();
+    setMySongs(
+      mySongs.map((song) =>
+        song.id === clickedSong.id ? { ...song, playStatus: 'paused' } : song
+      )
+    );
+  };
+
+  const songEnded = (curSong, playAllRef, curYourSongOrder) => {
+    const yourSongStatus = mySongRef.current.filter(
+      (song) => song.id === curSong.id
+    )[0].inYourSongs;
+    const updatedSong = mySongRef.current.filter(
+      (song) => song.id === curSong.id
+    );
+    if (playAllRef.current === true) {
+      nextSongFn(curSong, curYourSongOrder);
+    } else {
+      setMySongs(
+        mySongs.map((song) =>
+          song.id === curSong.id
+            ? { ...song, inYourSongs: yourSongStatus, playStatus: 'no' }
+            : { ...song, playStatus: 'no' }
+        )
+      );
+      setPlaying(null);
+    }
+  };
+
+  const keyFunc = (e) => {
+    const curSong = mySongs.filter((song) => song.playStatus !== 'no');
+    if (curSong.length > 0) {
+      switch (e.keyCode) {
+        case 32: // space bar = play/pause
+          if (curSong[0].playStatus === 'paused') {
+            startUp(curSong[0]);
+          } else {
+            pausePlaying(curSong[0]);
+          }
+          e.preventDefault();
+          break;
+        case 39: // forward arrow = next song
+          if (bucket === 'my-song-bucket') {
+            nextSongFn(curSong[0], curYourSongOrder);
+          }
+          break;
+        case 37:
+          rewind(curSong[0]);
+          break;
+        default:
+        // silence is golden
+      }
+    } else {
+      if (e.keyCode === 32 && bucket === 'my-song-bucket') {
+        // setplay all and start first song
+        // const songToStart = mySongs.filter((song) => )
+      }
+    }
+  };
+
+  return (
+    <BrowserRouter>
+      <div
+        className="App"
+        data-modal={
+          showModal || showDownloadModal ? 'modal-open' : 'modal-closed'
+        }
+      >
+        <div
+          className="main-content"
+          tabIndex={-1}
+          onKeyDownCapture={(e) => keyFunc(e)}
+        >
+          <Switch>
+            <Route path="/" exact>
+              <Home
+                playAll={playAll}
+                setPlayAll={setPlayAll}
+                mySongs={mySongs}
+                setMySongs={setMySongs}
+                filters={filters}
+                isPlaying={isPlaying}
+                setPlaying={setPlaying}
+                toggleFilter={toggleFilter}
+                setModal={setModal}
+                showModal={showModal}
+                setSort={setSort}
+                curSort={curSort}
+                setSorting={setSorting}
+                mySongRef={mySongRef}
+                startUp={startUp}
+                rewind={rewind}
+                pausePlaying={pausePlaying}
+                nextSongFn={nextSongFn}
+                songEnded={songEnded}
+                bucket={bucket}
+                setBucket={setBucket}
+                yourSongs={yourSongs}
+                setYourSongs={setYourSongs}
+                yourSongOrder={yourSongOrder}
+                setYourSongOrder={setYourSongOrder}
+                curYourSongOrder={curYourSongOrder}
+              />
+            </Route>
+            <Route path="/your-songs">
+              <YourSongs
+                playAll={playAll}
+                filters={filters}
+                setMySongs={setMySongs}
+                mySongs={mySongs}
+                isPlaying={isPlaying}
+                setPlayAll={setPlayAll}
+                setPlaying={setPlaying}
+                startUp={startUp}
+                rewind={rewind}
+                pausePlaying={pausePlaying}
+                nextSongFn={nextSongFn}
+                yourSongs={yourSongs}
+                setYourSongs={setYourSongs}
+                bucket={bucket}
+                setBucket={setBucket}
+                yourSongOrder={yourSongOrder}
+                setYourSongOrder={setYourSongOrder}
+                volume={volume}
+                setVolume={setVolume}
+                curYourSongOrder={curYourSongOrder}
+                showDownloadModal={showDownloadModal}
+                setDownloadModal={setDownloadModal}
+              />
+            </Route>
+            <Route component={NotFound} />
+          </Switch>
+          <div className="copyright">
+            {bucket === 'my-song-bucket' && isPlaying != null && (
+              <div className={'now-playing-widget'}>
+                <span
+                  className={
+                    mySongs.filter(
+                      (song) =>
+                        song.playStatus === 'paused' ||
+                        song.playStatus === 'yes'
+                    )[0].showSong === true
+                      ? 'now-playing'
+                      : 'now-playing not-showing'
+                  }
+                >
+                  Now playing:
+                </span>
+                <span
+                  className="now-playing-title"
+                  onClick={() => {
+                    mySongs.filter(
+                      (song) =>
+                        song.playStatus === 'paused' ||
+                        song.playStatus === 'yes'
+                    )[0].showSong === true && scrollToSong();
+                  }}
+                >
+                  {mySongs.filter(
+                    (song) =>
+                      song.playStatus === 'paused' || song.playStatus === 'yes'
+                  )[0] &&
+                    `${
+                      mySongs.filter(
+                        (song) =>
+                          song.playStatus === 'paused' ||
+                          song.playStatus === 'yes'
+                      )[0].title
+                    }`}
+                </span>
+                <span className="now-playing-buttons">
+                  {mySongs.filter((song) => song.playStatus === 'yes').length >
+                    0 && (
+                    <FaPause
+                      onClick={() =>
+                        pausePlaying(
+                          mySongs.filter((song) => song.playStatus === 'yes')[0]
+                        )
+                      }
+                    />
+                  )}
+                  {mySongs.filter((song) => song.playStatus === 'paused')
+                    .length > 0 && (
+                    <FaPlay
+                      onClick={() =>
+                        startUp(
+                          mySongs.filter(
+                            (song) => song.playStatus === 'paused'
+                          )[0]
+                        )
+                      }
+                    />
+                  )}
+                </span>
+              </div>
+            )}
+            <div>All songs &copy;Chris Howard - all rights&nbsp;reserved</div>
+          </div>
+        </div>
+      </div>
+      {showModal && (
+        <Modal setModal={setModal} showModal={showModal} mySongs={mySongs} />
+      )}
+    </BrowserRouter>
+  );
+};
 
 export default App;
