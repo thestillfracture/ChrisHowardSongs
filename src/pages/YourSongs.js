@@ -52,26 +52,39 @@ const YourSongs = ({
   const [marquee, setMarquee] = useState(false);
   const history = useHistory();
 
-  if(mySongs.length === 0){
-    history.push('/');
-  }
-
   useEffect(() => {
+    document.title = 'Your Playlist | Songs by Chris Howard';
     if (isPlaying != null) {
       isPlaying.pause();
       setMySongs(mySongs.map((song) => ({ ...song, playStatus: 'no' })));
       setPlaying(null);
     }
     setBucket('your-song-bucket');
-    if(mySongs != 0){
     setSongOrder();
-    volumeKnob(volume, setVolume);
+    if (mySongs.length > 0) {
+      volumeKnob(volume, setVolume);
     }
   }, []);
 
   useEffect(() => {
-    const checkSongs = mySongs.filter((song) => song.inYourSongs === true);
-    if (checkSongs.length === 0) {
+    const checkSongs = yourSongOrder;
+    if (checkSongs.length === 0 || mySongs.length === 0) {
+      const searchVal = window.location.search;
+      if (searchVal != '') {
+        const checkQuery = searchVal.indexOf('song-list');
+        if (checkQuery) {
+          let getSongs = searchVal.split('=');
+          let songPush = [];
+          getSongs = getSongs[1];
+          getSongs = getSongs.split(',');
+          getSongs.forEach(function (num) {
+            num = parseInt(num);
+            songPush.push(num);
+          });
+          setYourSongOrder(songPush);
+          localStorage.setItem('songs', JSON.stringify(songPush));
+        }
+      }
       history.push('/');
     }
   }, [history]);
@@ -98,14 +111,13 @@ const YourSongs = ({
       isPlaying.pause();
       setMySongs(mySongs.map((song) => ({ ...song, playStatus: 'no' })));
       setPlaying(null);
-      //setYourSongs(mySongs.filter((song) => song.inYourSongs === true))
     }
   }, [shuffle]);
 
   useEffect(() => {
     if (document.getElementById('slider-content') != null) {
       swipeFn(midSlide, leftSlide, rightSlide);
-      let vol = typeof volume;
+      //let vol = typeof volume;
     }
   }, [menu]);
 
@@ -125,7 +137,6 @@ const YourSongs = ({
       isPlaying.pause();
       setMySongs(mySongs.map((song) => ({ ...song, playStatus: 'no' })));
       setPlaying(null);
-      //setYourSongs(mySongs.filter((song) => song.inYourSongs === true))
     }
     setSongOrder();
     setMenu(!menu);
@@ -141,20 +152,22 @@ const YourSongs = ({
   };
 
   const newVolume = (opt) => {
-    if (opt === 'down') {
-      if (volume !== 0) {
-        if (volume <= 0.1) {
-          setVolume(0);
-        } else {
-          setVolume(volume - 0.1);
+    if (mySongs.length > 0) {
+      if (opt === 'down') {
+        if (volume !== 0) {
+          if (volume <= 0.1) {
+            setVolume(0);
+          } else {
+            setVolume(volume - 0.1);
+          }
         }
-      }
-    } else {
-      if (volume !== 1) {
-        if (volume >= 0.9) {
-          setVolume(1);
-        } else {
-          setVolume(volume + 0.1);
+      } else {
+        if (volume !== 1) {
+          if (volume >= 0.9) {
+            setVolume(1);
+          } else {
+            setVolume(volume + 0.1);
+          }
         }
       }
     }
@@ -282,203 +295,320 @@ const YourSongs = ({
 
   return (
     <div id="your-songs-page" className="bucket-container">
-      {mySongs.length != 0 &&
-      <>
-      <Background bg={'your-songs-bg'} />
-      <div className="top-div"></div>
-      <div className="bucket">
-        <div className="songlist-header desktop-songlist-header">
-          <header>
-            <h1>Your Songs</h1>
-          </header>
-          <div className="songlist-header-top">
-            <Link
-              to="/"
-              className="desktop-back-button"
-              onClick={() => wipeOut()}
-            >
-              <FaPowerOff />
-              &nbsp;Back to Song Machine
-              <div></div>
-            </Link>
-            <div className="readout">
-              <div className="desktop-time">
-                <Timer isPlaying={isPlaying} />
-              </div>
-              <div className="canvas-container">
-                <canvas
-                  id="canvas"
-                  width="800"
-                  height="50"
-                  style={{ backgroundColor: '#000' }}
-                ></canvas>
-              </div>
-              <audio controls id="audio" style={{ display: 'none' }}></audio>
-              <div className="readout-playing">
-                {shuffle ? (
-                  <span className="blink">shuffling</span>
-                ) : isPlaying === null ? (
-                  <span></span>
-                ) : (
-                  <span>
-                    Track{' '}
-                    {yourSongOrder.indexOf(
-                      mySongs.filter((song) => song.playStatus != 'no')[0].id
-                    ) + 1}
-                    :&nbsp;
-                  </span>
-                )}
-                <span className="current-song-title">
-                  {mySongs.map((song) =>
-                    song.playStatus != 'no' ? (
-                      <span
-                        key={song.id}
-                        className={
-                          mySongs.filter((song) => song.playStatus == 'paused')
-                            .length > 0
-                            ? 'blink'
-                            : ''
-                        }
-                      >
-                        {song.title}
-                      </span>
+      {mySongs.length != 0 && (
+        <>
+          <Background bg={'your-songs-bg'} />
+          <div className="top-div"></div>
+          <div className="bucket">
+            <div className="songlist-header desktop-songlist-header">
+              <header>
+                <h1>Your Songs</h1>
+              </header>
+              <div className="songlist-header-top">
+                <Link
+                  to="/"
+                  className="desktop-back-button"
+                  onClick={() => wipeOut()}
+                >
+                  <FaPowerOff />
+                  &nbsp;Back to Song Machine
+                  <div></div>
+                </Link>
+                <div className="readout">
+                  <div className="desktop-time">
+                    <Timer isPlaying={isPlaying} />
+                  </div>
+                  <div className="canvas-container">
+                    <canvas
+                      id="canvas"
+                      width="800"
+                      height="50"
+                      style={{ backgroundColor: '#000' }}
+                    ></canvas>
+                  </div>
+                  <audio
+                    controls
+                    id="audio"
+                    style={{ display: 'none' }}
+                  ></audio>
+                  <div className="readout-playing">
+                    {shuffle ? (
+                      <span className="blink">shuffling</span>
+                    ) : isPlaying === null ? (
+                      <span></span>
                     ) : (
-                      ''
-                    )
-                  )}
-                </span>
-                <br />
-                {isPlaying && (
-                  <span className="desktop-album-title">
-                    Album: Songs by Chris Howard
-                  </span>
-                )}
-              </div>
-            </div>
-            <div id="volume-control">
-              <div className="knob">
-                <div
-                  className="top"
-                  style={{ transform: 'rotate(231deg)' }}
-                ></div>
-                <div className="base"></div>
-              </div>
-            </div>
-          </div>
-          <div
-            className={`mobile-screen ${
-              menu === true ? 'mobile-menu-showing' : ''
-            }`}
-          >
-            <div className="mobile-screen-top">
-              {isPlaying !== null && (
-                <div className="play-pause-indicator">
-                  {mySongs.filter((song) => song.playStatus === 'paused')
-                    .length > 0 ? (
-                    <>
-                      <FaPause className="mobile-play-pause-icon" />
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                  {mySongs.filter((song) => song.playStatus === 'yes').length >
-                  0 ? (
-                    <>
-                      <FaPlay className="mobile-play-pause-icon" />
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              )}
-
-              <FaBatteryFull className="battery" />
-            </div>
-            <div
-              className={`mobile-readout mobile-left ${
-                menu === true ? 'mobile-menu' : ''
-              }`}
-            >
-              {shuffle === false && isPlaying !== null && menu === false && (
-                <div className="music-box">
-                  <FaMusic className="note1" />
-                  <FaMusic className="note2" />
-                </div>
-              )}
-              {menu === true && (
-                <div className="mobile-song-list show-mobile-menu">
-                  {yourSongOrder.map((yso) => (
-                    <div
-                      className="mobile-song"
-                      key={yso}
-                      onClick={() => yourSongPlay(yso)}
-                    >
-                      {
-                        mySongs[
-                          mySongs
-                            .map(function (e) {
-                              return e.id;
-                            })
-                            .indexOf(yso)
-                        ].title
-                      }
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            {shuffle === false && isPlaying === null && menu === false && (
-              <div className="apple-icon">
-                <FaApple />
-              </div>
-            )}
-            <div className="mobile-right">
-              <audio controls id="audio" style={{ display: 'none' }}></audio>
-              {shuffle === false && isPlaying !== null && (
-                <div className="mobile-readout-playing" id="mrp">
-                  <div
-                    className={`current-song-title ${
-                      marquee === true ? 'marquee' : ''
-                    }`}
-                  >
-                    {mySongs.map((song) =>
-                      song.playStatus != 'no' ? (
-                        <span
-                          key={song.id}
-                          className={
-                            mySongs.filter(
-                              (song) => song.playStatus == 'paused'
-                            ).length > 0
-                              ? 'blink'
-                              : ''
-                          }
-                        >
-                          {song.title}
-                        </span>
-                      ) : (
-                        ''
-                      )
+                      <span>
+                        Track{' '}
+                        {yourSongOrder.indexOf(
+                          mySongs.filter((song) => song.playStatus != 'no')[0]
+                            .id
+                        ) + 1}
+                        :&nbsp;
+                      </span>
+                    )}
+                    <span className="current-song-title">
+                      {mySongs.map((song) =>
+                        song.playStatus === 'paused' ||
+                        song.playStatus === 'yes' ? (
+                          <span
+                            key={song.id}
+                            className={
+                              mySongs.filter(
+                                (song) => song.playStatus == 'paused'
+                              ).length > 0
+                                ? 'blink'
+                                : ''
+                            }
+                          >
+                            {song.title}
+                          </span>
+                        ) : (
+                          ''
+                        )
+                      )}
+                    </span>
+                    <br />
+                    {isPlaying && (
+                      <span className="desktop-album-title">
+                        Album: Songs by Chris Howard
+                      </span>
                     )}
                   </div>
-                  <div>
-                    Chris Howard
-                    <br />
-                    Your Playlist
-                    <br />
-                    &nbsp;
-                    <br />
-                    {yourSongOrder.indexOf(
-                      mySongs.filter((song) => song.playStatus != 'no')[0].id
-                    ) + 1}{' '}
-                    of {yourSongOrder.length}
+                </div>
+                <div id="volume-control">
+                  <div className="knob">
+                    <div
+                      className="top"
+                      style={{ transform: 'rotate(231deg)' }}
+                    ></div>
+                    <div className="base"></div>
                   </div>
                 </div>
-              )}
-              {menu === true && (
-                <div id="slider-content">
+              </div>
+              <div
+                className={`mobile-screen ${
+                  menu === true ? 'mobile-menu-showing' : ''
+                }`}
+              >
+                <div className="mobile-screen-top">
+                  {isPlaying !== null && (
+                    <div className="play-pause-indicator">
+                      {mySongs.filter((song) => song.playStatus === 'paused')
+                        .length > 0 ? (
+                        <>
+                          <FaPause className="mobile-play-pause-icon" />
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {mySongs.filter((song) => song.playStatus === 'yes')
+                        .length > 0 ? (
+                        <>
+                          <FaPlay className="mobile-play-pause-icon" />
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  )}
+
+                  <FaBatteryFull className="battery" />
+                </div>
+                <div
+                  className={`mobile-readout mobile-left ${
+                    menu === true ? 'mobile-menu' : ''
+                  }`}
+                >
+                  {shuffle === false &&
+                    isPlaying !== null &&
+                    menu === false && (
+                      <div className="music-box">
+                        <FaMusic className="note1" />
+                        <FaMusic className="note2" />
+                      </div>
+                    )}
+                  {menu === true && (
+                    <div className="mobile-song-list show-mobile-menu">
+                      {yourSongOrder.map((yso) => (
+                        <div
+                          className="mobile-song"
+                          key={yso}
+                          onClick={() => yourSongPlay(yso)}
+                        >
+                          {
+                            mySongs[
+                              mySongs
+                                .map(function (e) {
+                                  return e.id;
+                                })
+                                .indexOf(yso)
+                            ].title
+                          }
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {shuffle === false && isPlaying === null && menu === false && (
+                  <div className="apple-icon">
+                    <FaApple />
+                  </div>
+                )}
+                <div className="mobile-right">
+                  <audio
+                    controls
+                    id="audio"
+                    style={{ display: 'none' }}
+                  ></audio>
+                  {shuffle === false && isPlaying !== null && (
+                    <div className="mobile-readout-playing" id="mrp">
+                      <div
+                        className={`current-song-title ${
+                          marquee === true ? 'marquee' : ''
+                        }`}
+                      >
+                        {mySongs.map((song) =>
+                          song.playStatus != 'no' ? (
+                            <span
+                              key={song.id}
+                              className={
+                                mySongs.filter(
+                                  (song) => song.playStatus == 'paused'
+                                ).length > 0
+                                  ? 'blink'
+                                  : ''
+                              }
+                            >
+                              {song.title}
+                            </span>
+                          ) : (
+                            ''
+                          )
+                        )}
+                      </div>
+                      <div>
+                        Chris Howard
+                        <br />
+                        Your Playlist
+                        <br />
+                        &nbsp;
+                        <br />
+                        {yourSongOrder.indexOf(
+                          mySongs.filter((song) => song.playStatus != 'no')[0]
+                            .id
+                        ) + 1}{' '}
+                        of {yourSongOrder.length}
+                      </div>
+                    </div>
+                  )}
+                  {menu === true && (
+                    <div id="slider-content">
+                      <div
+                        id="swiper-1"
+                        className="manage-button swiper-slide swiper-left"
+                        onClick={(e) => setShuffle(!shuffle)}
+                      >
+                        <TiArrowShuffle
+                          className={`shuffle-button ${
+                            shuffle === true && 'shuffle-active'
+                          }`}
+                        />
+                      </div>
+                      <div
+                        className="swipe-sub-text-left swipe-sub-text"
+                        onClick={() => midSlide()}
+                      >
+                        Download &gt;
+                      </div>
+                      <Download
+                        mySongs={mySongs}
+                        yourSongOrder={yourSongOrder}
+                        downloadClass="swiper-slide swiper-focused"
+                        downloadId="swiper-2"
+                        showDownloadModal={showDownloadModal}
+                        setDownloadModal={setDownloadModal}
+                      />
+                      <div className="swipe-sub-text-mid swipe-sub-text">
+                        <div onClick={() => leftSlide()}>&lt; Manage Songs</div>{' '}
+                        | <div onClick={() => rightSlide()}>Volume &gt;</div>
+                      </div>
+                      <div
+                        id="swiper-3"
+                        className="mobile-volume swiper-slide swiper-right"
+                      >
+                        <span
+                          className="volume-down"
+                          onClick={(e) => newVolume('down')}
+                        >
+                          -
+                        </span>
+                        <span
+                          className="volume-up"
+                          onClick={(e) => newVolume('up')}
+                        >
+                          +
+                        </span>
+                        <div className="volume-tracker">
+                          <div
+                            style={{ width: 'calc(' + volume + ' * 100%)' }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div
+                        className="swipe-sub-text-right swipe-sub-text"
+                        onClick={() => midSlide()}
+                      >
+                        &lt; Download
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="mobile-tracker-container">
+                  <Timer isPlaying={isPlaying} />
                   <div
-                    id="swiper-1"
-                    className="manage-button swiper-slide swiper-left"
+                    className="tracker-click-div"
+                    onClick={(e) => trackerClick(e)}
+                  ></div>
+                </div>
+              </div>
+              <div className="disc-holder">
+                <div></div>
+                <div style={{ position: 'relative', zIndex: '-1' }}>
+                  <div className="disc-tray">
+                    <div>
+                      <div className="disc">
+                        <span className="chris">Songs by Chris Howard</span>
+                        <span className="disc-songs">
+                          {yourSongOrder.map((yso) => (
+                            <span key={yso}>
+                              {
+                                mySongs[
+                                  mySongs
+                                    .map(function (e) {
+                                      return e.id;
+                                    })
+                                    .indexOf(yso)
+                                ].title
+                              }
+                            </span>
+                          ))}
+                        </span>
+                        <span className="disc-copyright">
+                          All songs &copy;Chris Howard
+                          <br />
+                          All Rights Reserved
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="disc-drawer"></div>
+                </div>
+                <div></div>
+              </div>
+              <div className="lower-controls">
+                <div className="playlist-buttons">
+                  <div
+                    className="manage-button"
                     onClick={(e) => setShuffle(!shuffle)}
                   >
                     <TiArrowShuffle
@@ -487,180 +617,117 @@ const YourSongs = ({
                       }`}
                     />
                   </div>
-                  <div
-                    className="swipe-sub-text-left swipe-sub-text"
-                    onClick={() => midSlide()}
-                  >
-                    Download &gt;
+                  <div className="download-button">
+                    <Download
+                      mySongs={mySongs}
+                      yourSongOrder={yourSongOrder}
+                      downloadClass="desktop-downloader"
+                      downloadId=""
+                      showDownloadModal={showDownloadModal}
+                      setDownloadModal={setDownloadModal}
+                    />
                   </div>
-                  <Download
-                    mySongs={mySongs}
-                    yourSongOrder={yourSongOrder}
-                    downloadClass="swiper-slide swiper-focused"
-                    downloadId="swiper-2"
-                    showDownloadModal={showDownloadModal}
-                    setDownloadModal={setDownloadModal}
-                  />
-                  <div className="swipe-sub-text-mid swipe-sub-text">
-                    <div onClick={() => leftSlide()}>&lt; Manage Songs</div> |{' '}
-                    <div onClick={() => rightSlide()}>Volume &gt;</div>
-                  </div>
+                  <div className="clear"></div>
+                  <div className="playlist-buttons-title">Playlist Actions</div>
+                </div>
+                <div className="play-pause-rew">
                   <div
-                    id="swiper-3"
-                    className="mobile-volume swiper-slide swiper-right"
+                    className="mobile-manage-button"
+                    onClick={(e) => mobileMenu()}
                   >
-                    <span
-                      className="volume-down"
-                      onClick={(e) => newVolume('down')}
+                    MENU
+                  </div>
+                  <Link
+                    to="/"
+                    className="mobile-back-button"
+                    onClick={() => wipeOut()}
+                  >
+                    BACK TO
+                    <br />
+                    SONGS
+                    <div></div>
+                  </Link>
+                  <div
+                    className="your-rewind-button"
+                    onClick={() => yourSongRewind()}
+                  >
+                    <FaBackward />
+                  </div>
+                  {mySongs.filter((song) => song.playStatus == 'yes').length ==
+                  0 ? (
+                    <div
+                      className="your-play-button"
+                      onClick={() => (yourSongPlay(null), setMenu(false))}
                     >
-                      -
-                    </span>
-                    <span
-                      className="volume-up"
-                      onClick={(e) => newVolume('up')}
-                    >
-                      +
-                    </span>
-                    <div className="volume-tracker">
-                      <div
-                        style={{ width: 'calc(' + volume + ' * 100%)' }}
-                      ></div>
+                      <FaPlay />
                     </div>
-                  </div>
+                  ) : (
+                    <div
+                      className="your-pause-button"
+                      onClick={() => yourSongPause()}
+                    >
+                      <FaPause />
+                    </div>
+                  )}
                   <div
-                    className="swipe-sub-text-right swipe-sub-text"
-                    onClick={() => midSlide()}
+                    className="your-forward-button"
+                    onClick={() => yourSongForward()}
                   >
-                    &lt; Download
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="mobile-tracker-container">
-              <Timer isPlaying={isPlaying} />
-              <div
-                className="tracker-click-div"
-                onClick={(e) => trackerClick(e)}
-              ></div>
-            </div>
-          </div>
-          <div className="disc-holder">
-            <div></div>
-            <div style={{ position: 'relative', zIndex: '-1' }}>
-              <div className="disc-tray">
-                <div>
-                  <div className="disc">
-                    <span className="chris">Songs by Chris Howard</span>
-                    <span className="disc-songs">
-                      {yourSongOrder.map((yso) => (
-                        <span key={yso}>
-                          {
-                            mySongs[mySongs.map(function (e) {return e.id;}).indexOf(yso)].title
-                          }
-                        </span>
-                      ))}
-                    </span>
-                    <span className="disc-copyright">
-                      All songs &copy;Chris Howard
-                      <br />
-                      All Rights Reserved
-                    </span>
+                    <FaForward />
                   </div>
                 </div>
               </div>
-              <div className="disc-drawer"></div>
-            </div>
-            <div></div>
-          </div>
-          <div className="lower-controls">
-            <div className="playlist-buttons">
-              <div
-                className="manage-button"
-                onClick={(e) => setShuffle(!shuffle)}
-              >
-                <TiArrowShuffle
-                  className={`shuffle-button ${
-                    shuffle === true && 'shuffle-active'
-                  }`}
-                />
-              </div>
-              <div className="download-button">
-                <Download
-                  mySongs={mySongs}
-                  yourSongOrder={yourSongOrder}
-                  downloadClass="desktop-downloader"
-                  downloadId=""
-                  showDownloadModal={showDownloadModal}
-                  setDownloadModal={setDownloadModal}
-                />
-              </div>
-              <div className="clear"></div>
-              <div className="playlist-buttons-title">Playlist Actions</div>
-            </div>
-            <div className="play-pause-rew">
-              <div
-                className="mobile-manage-button"
-                onClick={(e) => mobileMenu()}
-              >
-                MENU
-              </div>
-              <Link
-                to="/"
-                className="mobile-back-button"
-                onClick={() => wipeOut()}
-              >
-                BACK TO
-                <br />
-                SONGS
-                <div></div>
-              </Link>
-              <div
-                className="your-rewind-button"
-                onClick={() => yourSongRewind()}
-              >
-                <FaBackward />
-              </div>
-              {mySongs.filter((song) => song.playStatus == 'yes').length ==
-              0 ? (
-                <div
-                  className="your-play-button"
-                  onClick={() => (yourSongPlay(null), setMenu(false))}
-                >
-                  <FaPlay />
-                </div>
-              ) : (
-                <div
-                  className="your-pause-button"
-                  onClick={() => yourSongPause()}
-                >
-                  <FaPause />
-                </div>
-              )}
-              <div
-                className="your-forward-button"
-                onClick={() => yourSongForward()}
-              >
-                <FaForward />
-              </div>
-            </div>
-          </div>
 
-          <div className="clear"></div>
-        </div>
-        <div
-          className={`song-list ${shuffle === true && 'show-desktop-shuffle'}`}
-          id="your-songs-bucket"
-        >
-          <div className="close-song-list" onClick={() => setShuffle(false)}>
-            Close
-          </div>
-          {yourSongOrder.length == 0
-            ? mySongs.map(
-                (song) =>
-                  song.inYourSongs === true && (
+              <div className="clear"></div>
+            </div>
+            <div
+              className={`song-list ${
+                shuffle === true && 'show-desktop-shuffle'
+              }`}
+              id="your-songs-bucket"
+            >
+              <div
+                className="close-song-list"
+                onClick={() => setShuffle(false)}
+              >
+                Close
+              </div>
+              {yourSongOrder.length == 0
+                ? mySongs.map(
+                    (song) =>
+                      song.inYourSongs === true && (
+                        <Song
+                          key={song.id}
+                          song={song}
+                          isPlaying={isPlaying}
+                          setMySongs={setMySongs}
+                          mySongs={mySongs}
+                          setPlaying={setPlaying}
+                          yourSongs={yourSongs}
+                          startUp={startUp}
+                          rewind={rewind}
+                          pausePlaying={pausePlaying}
+                          nextSongFn={nextSongFn}
+                          bucket={bucket}
+                          setYourSongOrder={setYourSongOrder}
+                          setYourSongs={setYourSongs}
+                          yourSongOrder={yourSongOrder}
+                          curYourSongOrder={curYourSongOrder}
+                        />
+                      )
+                  )
+                : yourSongOrder.map((orderId) => (
                     <Song
-                      key={song.id}
-                      song={song}
+                      key={Math.random()}
+                      song={
+                        mySongs[
+                          mySongs
+                            .map(function (e) {
+                              return e.id;
+                            })
+                            .indexOf(orderId)
+                        ]
+                      }
                       isPlaying={isPlaying}
                       setMySongs={setMySongs}
                       mySongs={mySongs}
@@ -676,41 +743,12 @@ const YourSongs = ({
                       yourSongOrder={yourSongOrder}
                       curYourSongOrder={curYourSongOrder}
                     />
-                  )
-              )
-            : yourSongOrder.map((orderId) => (
-                <Song
-                  key={Math.random()}
-                  song={
-                    mySongs[
-                      mySongs
-                        .map(function (e) {
-                          return e.id;
-                        })
-                        .indexOf(orderId)
-                    ]
-                  }
-                  isPlaying={isPlaying}
-                  setMySongs={setMySongs}
-                  mySongs={mySongs}
-                  setPlaying={setPlaying}
-                  yourSongs={yourSongs}
-                  startUp={startUp}
-                  rewind={rewind}
-                  pausePlaying={pausePlaying}
-                  nextSongFn={nextSongFn}
-                  bucket={bucket}
-                  setYourSongOrder={setYourSongOrder}
-                  setYourSongs={setYourSongs}
-                  yourSongOrder={yourSongOrder}
-                  curYourSongOrder={curYourSongOrder}
-                />
-              ))}
-        </div>
-        <div className="mobile-songlist-header"></div>
-      </div>
-      </>
-}
+                  ))}
+            </div>
+            <div className="mobile-songlist-header"></div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

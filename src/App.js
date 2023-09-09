@@ -9,8 +9,6 @@ import { initVisualizer } from './functions/visualizer';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { is } from 'bluebird';
 const App = () => {
-  let initYourSongOrder = JSON.parse(localStorage.getItem('songs'));
-  initYourSongOrder ||= [];
   const [mySongs, setMySongs] = useState([]);
   const [playAll, setPlayAll] = useState(true);
   const [isPlaying, setPlaying] = useState(null); // audio object
@@ -21,7 +19,9 @@ const App = () => {
     mySongs.filter((song) => song.inYourSongs === true)
   );
   const [bucket, setBucket] = useState('my-song-bucket');
-  const [yourSongOrder, setYourSongOrder] = useState(initYourSongOrder);
+  const [yourSongOrder, setYourSongOrder] = useState(
+    JSON.parse(localStorage.getItem('songs')) ?? []
+  );
   const [volume, setVolume] = useState(0.64);
   const [showDownloadModal, setDownloadModal] = useState(false);
 
@@ -35,13 +35,29 @@ const App = () => {
     const getSongs = async () => {
       // PRODUCTION /*******************DO NOT DELETE ***************/
       const res = await fetch('db.json');
-      const data = await res.json();
+      let data = await res.json();
+      if (localStorage.length != 0) {
+        const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
+        data.songs = await data.songs.map((song) =>
+          getLocalStorage.filter((f, song) => f === song.id).length > 0
+            ? { ...song, inYourSongs: true }
+            : { ...song }
+        );
+      }
       initSort(data.songs);
       findFilters(data.songs);
 
       // LOCAL - don't forget to start the server: npm run server - optional: comment out initVisualizer to avoid CORS isses
       // const res = await fetch('http://localhost:5000/songs');
-      // const data = await res.json();
+      // let data = await res.json();
+      // if (localStorage.length != 0) {
+      //   const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
+      //   data = await data.map((song) =>
+      //     getLocalStorage.filter((f, song) => f === song.id).length > 0
+      //       ? { ...song, inYourSongs: true }
+      //       : { ...song }
+      //   );
+      // }
       // initSort(data);
       // findFilters(data);
     };
@@ -62,9 +78,21 @@ const App = () => {
   }, [mySongs]);
 
   useEffect(() => {
-    if (yourSongOrder != null) {
-      localStorage.setItem('songs', JSON.stringify(yourSongOrder));
+    if (yourSongOrder.length !== 0) {
+      // we don't want to wipe this out on a fresh page load
+      if (bucket === 'my-song-bucket') {
+        localStorage.setItem('songs', JSON.stringify(yourSongOrder));
+      } else {
+        localStorage.setItem('songs', JSON.stringify(yourSongOrder));
+      }
     }
+    setMySongs(
+      mySongs.map((song) =>
+        yourSongOrder.indexOf(song.id) >= 0
+          ? { ...song, inYourSongs: true }
+          : { ...song }
+      )
+    );
   }, [yourSongOrder]);
 
   // current state of my songs - including after sorting
@@ -166,6 +194,14 @@ const App = () => {
     // if (isPlaying != null) {
     //   // isPlaying.pause();
     // }
+    const playingSong = mySongs.filter((song) => song.playStatus === 'yes');
+    if (playingSong.length > 0) {
+      if (updateMySongs(filters, playingSong[0]) !== true) {
+        document
+          .querySelector('.copyright')
+          .classList.add('now-playing-showing');
+      }
+    }
   }, [filters]);
 
   const initSort = (data) => {
@@ -182,14 +218,10 @@ const App = () => {
     );
   };
 
-  // const initSelected = (data) => {
-  //   debugger;
-  //   const existingSelected = JSON.parse(localStorage.getItem('songs'));
+  // const checkLocalStorage = () => {
   //   setMySongs(
   //     mySongs.map((song) =>
-  //       existingSelected.filter((sel) => sel === song.id).length > 0
-  //         ? { ...song, inYourSongs: true }
-  //         : { ...song }
+  //       1 === 1 ? { ...song, inYourSongs: true } : { ...song }
   //     )
   //   );
   // };
@@ -260,7 +292,7 @@ const App = () => {
       )
     );
     if (isPlaying != null) {
-      setPlayAll(false);
+      //setPlayAll(false);
     }
   };
 
@@ -327,6 +359,7 @@ const App = () => {
             : { ...song, playStatus: 'no' }
         )
       );
+      document.title = `${newSong.title} | Songs by Chris Howard`;
     } else {
       if (isPlaying != null) {
         isPlaying.pause();
@@ -361,6 +394,7 @@ const App = () => {
       );
       initVisualizer(_song2Play, true);
       _song2Play.volume = volume;
+      document.title = `${newSong.title} | Songs by Chris Howard`;
     }
   };
 
@@ -454,6 +488,7 @@ const App = () => {
         }
       }
     }
+    document.title = `${clickedSong.title} | Songs by Chris Howard`;
   };
 
   const pausePlaying = (clickedSong) => {
@@ -483,6 +518,7 @@ const App = () => {
         )
       );
       setPlaying(null);
+      document.title = 'Songs by Chris Howard';
     }
   };
 

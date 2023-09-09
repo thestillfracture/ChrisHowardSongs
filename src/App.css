@@ -40,6 +40,22 @@
 }
 
 @font-face {
+  font-family: 'LCD-mobile';
+  src: url('fonts/liquidcrystal-normal-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LCD-mobile-light';
+  src: url('fonts/liquidcrystal-light-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Apple';
   src: url('fonts/ChicagoFLF.woff') format('woff'),
     url('fonts/ChicagoFLF.ttf') format('ttf');
@@ -3221,6 +3237,10 @@ div[data-modal="modal-open"] .mobile-screen {
   text-align: center;
   color: #dadbdd;
   font-size: 12px;
+  z-index: 4;
+}
+
+.App[data-modal="modal-open"] .swipe-sub-text {
   z-index: 2;
 }
 

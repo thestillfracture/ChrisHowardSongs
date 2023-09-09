@@ -2,6 +2,7 @@ const DownloadModal = ({
   showDownloadModal,
   setDownloadModal,
   zipAndDownload,
+  yourSongOrder,
 }) => {
   return (
     <div className="modal download-modal" style={{ zIndex: 40000 }}>
@@ -16,7 +17,7 @@ const DownloadModal = ({
           <br />
           <br />
           ...but if you're feeling generous and would like to give some amount
-          (of your choosing) you can do so through{' '}
+          of your choosing you can do so through{' '}
           <a
             href="https://www.paypal.com/donate/?hosted_button_id=UTPDQ3YGPJGQ6"
             target="_blank"
@@ -28,7 +29,10 @@ const DownloadModal = ({
             </span>{' '}
             (&quot;The Still Fracture&quot; is me)
           </a>
-          . You can also find more of my music at{' '}
+          .
+          <br />
+          <br />
+          You can also find more of my music at{' '}
           <a
             href="https://thestillfracture.bandcamp.com/album/songs-for-america"
             target="_blank"
@@ -48,8 +52,33 @@ const DownloadModal = ({
           Download Songs
         </div>
         <p style={{ fontStyle: 'italic', fontSize: '0.8em' }}>
-          Please respect the fact that these songs are copyrited and do not use
+          Please respect the fact that these songs are copyrighted. Do not use
           them in any way for profit without my express consent.
+        </p>
+        <p style={{ fontSize: '1.5rem', textTransform: 'uppercase' }}>
+          Save/Share Playlist:
+        </p>
+        <p>
+          If you would like to save or share this playlist, you can copy this
+          link:
+          <br />
+          <span
+            style={{
+              userSelect: 'all',
+              border: '1px solid',
+              padding: '0 0.4em',
+              fontSize: '0.8em',
+            }}
+          >
+            https://www.chrishowardsongs.com/your-songs?song-list=
+            {yourSongOrder.map((num) => {
+              if (num === yourSongOrder[yourSongOrder.length - 1]) {
+                return num;
+              } else {
+                return num + ',';
+              }
+            })}
+          </span>
         </p>
       </div>
     </div>

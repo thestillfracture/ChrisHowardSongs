@@ -6,7 +6,6 @@ import Filters from '../components/Filters';
 import SongList from './SongList';
 import Background from '../components/Background';
 import Sort from '../components/Sort';
-import { forEach } from 'jszip';
 
 const Home = ({
   playAll,
@@ -33,11 +32,11 @@ const Home = ({
   setYourSongOrder,
   setYourSongs,
   curYourSongOrder,
-  loaded,
 }) => {
   const [filtersShowing, setFiltersShowing] = useState(false);
 
   useEffect(() => {
+    document.title = 'Songs by Chris Howard';
     setBucket('my-song-bucket');
 
     const el = document.querySelector('.songlist-header');
@@ -196,7 +195,9 @@ const Home = ({
               )}
             </div>
           </div>
-          {mySongs.filter((song) => song.inYourSongs == true).length > 0 ? (
+          {mySongs.filter((song) => song.inYourSongs == true).length > 0 ||
+          (localStorage.getItem('songs') !== null &&
+            localStorage.getItem('songs') !== '[]') ? (
             <Link to="/your-songs" className="go-to-your-songs">
               Go to Your Playlist{' '}
               <FaExternalLinkAlt className="large-playlist-icon" />

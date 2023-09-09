@@ -38,6 +38,14 @@ const Song = ({
       )
     );
     setYourSongOrder(yourSongOrder.filter((song) => song !== songToRemove.id));
+    const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
+    const newLocalStorage = getLocalStorage.filter(
+      (song) => song != songToRemove.id
+    );
+    const newLocalStoragePush = JSON.stringify(newLocalStorage);
+    localStorage.clear();
+    localStorage.setItem('songs', newLocalStoragePush);
+    console.log(newLocalStorage);
   };
 
   const addSongToPlaylist = (e) => {
@@ -446,7 +454,11 @@ const Song = ({
                 </button>
               )}
 
-            {song.inYourSongs === true && (
+            {(song.inYourSongs === true ||
+              (localStorage.length != 0 &&
+                JSON.parse(localStorage.getItem('songs')).filter(
+                  (f) => f === song.id
+                ).length > 0)) && (
               <div className="song-added" key={song.id}>
                 <span
                   className="my-songs-remove"

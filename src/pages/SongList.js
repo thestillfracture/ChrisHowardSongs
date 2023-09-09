@@ -28,35 +28,9 @@ const SongList = ({
       isPlaying.pause();
       setPlaying({});
     }
-
-    // we really only want this to run once and only
-    if (
-      mySongs.length !== 0 &&
-      bucket === 'my-song-bucket' &&
-      localStorage.getItem('songs') != null
-    ) {
-      if (document.readyState == 'complete') {
-        getLocalStorage();
-      } else {
-        window.addEventListener('load', getLocalStorage);
-        return () => window.removeEventListener('load', getLocalStorage);
-      }
-    } else {
-      setMySongs(mySongs.map((song) => ({ ...song, playStatus: 'no' })));
-    }
+    //setPlayAll(false);
+    setMySongs(mySongs.map((song) => ({ ...song, playStatus: 'no' })));
   }, []);
-
-  const getLocalStorage = () => {
-    const existingSelected = JSON.parse(localStorage.getItem('songs'));
-
-    setMySongs(
-      mySongs.map((song) =>
-        existingSelected.filter((sel) => sel === song.id).length > 0
-          ? { ...song, inYourSongs: true }
-          : { ...song }
-      )
-    );
-  };
 
   return (
     <>

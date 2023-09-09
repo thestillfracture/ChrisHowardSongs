@@ -107,6 +107,7 @@ const Download = ({
           setDownloadModal={setDownloadModal}
           showDownloadModal={setDownloadModal}
           zipAndDownload={zipAndDownload}
+          yourSongOrder={yourSongOrder}
         />
       )}
     </div>
