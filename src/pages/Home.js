@@ -49,7 +49,6 @@ const Home = ({
 
     window.addEventListener('scroll', () => {
       if (document.querySelector('.active-song') != null) {
-        //console.log(document.querySelector('.active-song').innerHTML);
         const t = document
           .querySelector('.active-song')
           .getBoundingClientRect().top;

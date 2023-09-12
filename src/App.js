@@ -200,6 +200,7 @@ const App = () => {
         document
           .querySelector('.copyright')
           .classList.add('now-playing-showing');
+        setPlayAll(false);
       }
     }
   }, [filters]);
@@ -328,7 +329,9 @@ const App = () => {
       if (isPlaying != null) {
         isPlaying.pause();
       }
-      const nextSongList = mySongs.filter((song) => song.showSong === true);
+      const nextSongList = mySongRef.current.filter(
+        (song) => song.showSong === true
+      );
       const findCurSong = nextSongList
         .map(function (e) {
           return e.id;
@@ -351,12 +354,34 @@ const App = () => {
           song.id === newSong.id
             ? curYourSongOrder.current.filter((num) => num === song.id).length >
               0
-              ? { ...song, playStatus: 'yes', inYourSongs: true }
-              : { ...song, playStatus: 'yes' }
+              ? {
+                  ...song,
+                  playStatus: 'yes',
+                  showSong: mySongRef.current.filter((f) => f.id === song.id)[0]
+                    .showSong,
+                  inYourSongs: true,
+                }
+              : {
+                  ...song,
+                  showSong: mySongRef.current.filter((f) => f.id === song.id)[0]
+                    .showSong,
+                  playStatus: 'yes',
+                }
             : curYourSongOrder.current.filter((num) => num === song.id).length >
               0
-            ? { ...song, playStatus: 'no', inYourSongs: true }
-            : { ...song, playStatus: 'no' }
+            ? {
+                ...song,
+                playStatus: 'no',
+                showSong: mySongRef.current.filter((f) => f.id === song.id)[0]
+                  .showSong,
+                inYourSongs: true,
+              }
+            : {
+                ...song,
+                showSong: mySongRef.current.filter((f) => f.id === song.id)[0]
+                  .showSong,
+                playStatus: 'no',
+              }
         )
       );
       document.title = `${newSong.title} | Songs by Chris Howard`;

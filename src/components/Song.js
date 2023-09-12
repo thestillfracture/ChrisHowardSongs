@@ -476,14 +476,12 @@ const Song = ({
               <MdOutlineReplay
                 className="rewind"
                 onClick={() => rewind(song)}
-                style={{ color: '#3a362d' }}
               />
             )}
             {song.playStatus === 'yes' && (
               <FaForward
                 className="forward"
                 onClick={() => nextSongFn(song, curYourSongOrder)}
-                style={{ color: '#3a362d' }}
               />
             )}
           </div>
