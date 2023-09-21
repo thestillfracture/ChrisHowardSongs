@@ -45,7 +45,6 @@ const Song = ({
     const newLocalStoragePush = JSON.stringify(newLocalStorage);
     localStorage.clear();
     localStorage.setItem('songs', newLocalStoragePush);
-    console.log(newLocalStorage);
   };
 
   const addSongToPlaylist = (e) => {
@@ -74,12 +73,14 @@ const Song = ({
   };
 
   const mobileSortStart = (e, song) => {
+    // debugger;
     if (bucket === 'your-song-bucket') {
       if (e.target.parentElement.className === 'remove-x') {
         removeSong(song);
         return;
       }
-      if (mySongs.filter((song) => song.inYourSongs === true).length > 1) {
+      // if (mySongs.filter((song) => song.inYourSongs === true).length > 1) {
+      if (yourSongOrder != null) {
         let firstCont;
         if (document.getElementById('your-songs-bucket').scrollTop <= 79) {
           firstCont = 79;
@@ -384,7 +385,8 @@ const Song = ({
     >
       <div
         className={`${
-          song.playStatus === 'yes' || song.playStatus === 'paused'
+          // song.playStatus === 'yes' || song.playStatus === 'paused'
+          song.playStatus !== 'no'
             ? ['song', 'active-song', 'song-id-' + song.id].join(' ')
             : ['song', 'song-id-' + song.id].join(' ')
         } 
@@ -412,9 +414,7 @@ const Song = ({
         {bucket === 'your-song-bucket' && (
           <div className="track-num">
             Track{' '}
-            {song.inYourSongs === true &&
-              yourSongs !== undefined &&
-              yourSongOrder.indexOf(song.id) + 1}
+            {yourSongs !== undefined && yourSongOrder.indexOf(song.id) + 1}
           </div>
         )}
         {bucket === 'your-song-bucket' && (
@@ -445,6 +445,10 @@ const Song = ({
         <>
           <div className="song-buttons">
             {song.inYourSongs === false &&
+              localStorage.length === 0 &&
+              JSON.parse(localStorage.getItem('songs')).filter(
+                (f) => f === song.id
+              ).length > 0 &&
               (song.playStatus === 'yes' || song.playStatus === 'paused') && (
                 <button
                   className="add-to-playlist-button"

@@ -8,7 +8,7 @@ const Background = ({ bg, setModal }) => {
         {bg === 'home-bg' && (
           <div className="build-your-playlist">
             <div>
-              <div className="build1">Build your Playlist:</div>
+              <div className="build1">Build / Download your Playlist:</div>
               <div className="build2">
                 1. Listen <span>&amp;</span> Select
               </div>

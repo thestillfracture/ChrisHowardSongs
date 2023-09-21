@@ -7,7 +7,8 @@ import NotFound from './pages/NotFound';
 import Modal from './pages/Modal';
 import { initVisualizer } from './functions/visualizer';
 import { FaPlay, FaPause } from 'react-icons/fa';
-import { is } from 'bluebird';
+import { MdKeyboardArrowUp } from 'react-icons/md';
+// import { initializeApp } from 'firebase/app';
 const App = () => {
   const [mySongs, setMySongs] = useState([]);
   const [playAll, setPlayAll] = useState(true);
@@ -24,6 +25,17 @@ const App = () => {
   );
   const [volume, setVolume] = useState(0.64);
   const [showDownloadModal, setDownloadModal] = useState(false);
+  const [shuffle, setShuffle] = useState(false);
+  // const firebaseConfig = {
+  //   apiKey: 'AIzaSyCGQ0tYppWFJkuSxBhOpkH0xVDmX245Vdc',
+  //   authDomain: 'project-id.firebaseapp.com',
+  //   databaseURL: 'https://project-id.firebaseio.com',
+  //   projectId: 'project-id',
+  //   storageBucket: 'project-id.appspot.com',
+  //   messagingSenderId: '637908496727',
+  //   appId: '2:637908496727:web:a4284b4c99e329d5',
+  //   measurementId: 'G-N0MJD7BDPW',
+  // };
 
   useEffect(() => {
     if (isPlaying != null) {
@@ -33,33 +45,40 @@ const App = () => {
 
   useEffect(() => {
     const getSongs = async () => {
-      // PRODUCTION /*******************DO NOT DELETE ***************/
-      const res = await fetch('db.json');
+      let res;
+      if (window.location.href.indexOf('localhost') > 0) {
+        res = await fetch('http://localhost:5000/songs');
+      } else {
+        res = await fetch('db.json');
+        // const app = initializeApp(firebaseConfig);
+      }
       let data = await res.json();
       if (localStorage.length != 0) {
         const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
-        data.songs = await data.songs.map((song) =>
+        data = await data.map((song) =>
           getLocalStorage.filter((f, song) => f === song.id).length > 0
             ? { ...song, inYourSongs: true }
             : { ...song }
         );
       }
-      initSort(data.songs);
-      findFilters(data.songs);
-
-      // LOCAL - don't forget to start the server: npm run server - optional: comment out initVisualizer to avoid CORS isses
-      // const res = await fetch('http://localhost:5000/songs');
-      // let data = await res.json();
-      // if (localStorage.length != 0) {
-      //   const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
-      //   data = await data.map((song) =>
-      //     getLocalStorage.filter((f, song) => f === song.id).length > 0
-      //       ? { ...song, inYourSongs: true }
-      //       : { ...song }
-      //   );
+      initSort(data);
+      findFilters(data);
+      // LOCAL - to start the server: npm run server - optional: comment out initVisualizer() instances to avoid CORS isses
+      // } else {
+      //   // PRODUCTION
+      //   const res = await fetch('db.json');
+      //   let data = await res.json();
+      //   if (localStorage.length != 0) {
+      //     const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
+      //     data.songs = await data.songs.map((song) =>
+      //       getLocalStorage.filter((f, song) => f === song.id).length > 0
+      //         ? { ...song, inYourSongs: true }
+      //         : { ...song }
+      //     );
+      //   }
+      //   initSort(data.songs);
+      //   findFilters(data.songs);
       // }
-      // initSort(data);
-      // findFilters(data);
     };
 
     getSongs();
@@ -73,18 +92,20 @@ const App = () => {
       mySongs.filter((song) => song.playStatus === 'yes').length > 0 &&
       document.querySelector('.active-song') != null
     ) {
-      scrollToSong();
+      if (isPlaying.currentTime === 0) {
+        scrollToSong();
+      }
     }
   }, [mySongs]);
 
   useEffect(() => {
     if (yourSongOrder.length !== 0) {
       // we don't want to wipe this out on a fresh page load
-      if (bucket === 'my-song-bucket') {
-        localStorage.setItem('songs', JSON.stringify(yourSongOrder));
-      } else {
-        localStorage.setItem('songs', JSON.stringify(yourSongOrder));
-      }
+      // if (bucket === 'my-song-bucket') {
+      localStorage.setItem('songs', JSON.stringify(yourSongOrder));
+      // } else {
+      // localStorage.setItem('songs', JSON.stringify(yourSongOrder));
+      // }
     }
     setMySongs(
       mySongs.map((song) =>
@@ -94,6 +115,15 @@ const App = () => {
       )
     );
   }, [yourSongOrder]);
+
+  // window.addEventListener('scroll', () => {
+  //   window.location.pathname !== '/your-songs' && window.scrollY > 530
+  //     ? (document.querySelector('.back-to-top').style.opacity = '1')
+  //     : (document.querySelector('.back-to-top').style.opacity = '0');
+  // });
+  // window.onscroll = function(){
+  //   if(window.scrollY >
+  // }
 
   // current state of my songs - including after sorting
   const mySongRef = useRef({});
@@ -532,18 +562,48 @@ const App = () => {
     const updatedSong = mySongRef.current.filter(
       (song) => song.id === curSong.id
     );
-    if (playAllRef.current === true) {
-      nextSongFn(curSong, curYourSongOrder);
-    } else {
+    if (
+      mySongRef.current.filter((song) => song.showSong === true).length === 0
+    ) {
       setMySongs(
         mySongs.map((song) =>
           song.id === curSong.id
-            ? { ...song, inYourSongs: yourSongStatus, playStatus: 'no' }
-            : { ...song, playStatus: 'no' }
+            ? {
+                ...song,
+                showSong: false,
+                inYourSongs: yourSongStatus,
+                playStatus: 'no',
+              }
+            : { ...song, showSong: false, playStatus: 'no' }
         )
       );
-      setPlaying(null);
-      document.title = 'Songs by Chris Howard';
+    } else {
+      if (playAllRef.current === true) {
+        nextSongFn(curSong, curYourSongOrder);
+      } else {
+        setMySongs(
+          mySongs.map((song) =>
+            song.id === curSong.id
+              ? {
+                  ...song,
+                  showSong: mySongRef.current.filter(
+                    (f) => f.id === song.id
+                  )[0],
+                  inYourSongs: yourSongStatus,
+                  playStatus: 'no',
+                }
+              : {
+                  ...song,
+                  showSong: mySongRef.current.filter(
+                    (f) => f.id === song.id
+                  )[0],
+                  playStatus: 'no',
+                }
+          )
+        );
+        setPlaying(null);
+        document.title = 'Songs by Chris Howard';
+      }
     }
   };
 
@@ -646,75 +706,103 @@ const App = () => {
                 curYourSongOrder={curYourSongOrder}
                 showDownloadModal={showDownloadModal}
                 setDownloadModal={setDownloadModal}
+                mySongRef={mySongRef}
+                shuffle={shuffle}
+                setShuffle={setShuffle}
               />
             </Route>
             <Route component={NotFound} />
           </Switch>
           <div className="copyright">
-            {bucket === 'my-song-bucket' && isPlaying != null && (
-              <div className={'now-playing-widget'}>
-                <span
-                  className={
-                    mySongs.filter(
-                      (song) =>
-                        song.playStatus === 'paused' ||
-                        song.playStatus === 'yes'
-                    )[0].showSong === true
-                      ? 'now-playing'
-                      : 'now-playing not-showing'
-                  }
-                >
-                  Now playing:
-                </span>
-                <span
-                  className="now-playing-title"
-                  onClick={() => {
-                    mySongs.filter(
-                      (song) =>
-                        song.playStatus === 'paused' ||
-                        song.playStatus === 'yes'
-                    )[0].showSong === true && scrollToSong();
-                  }}
-                >
-                  {mySongs.filter(
-                    (song) =>
-                      song.playStatus === 'paused' || song.playStatus === 'yes'
-                  )[0] &&
-                    `${
+            {bucket === 'my-song-bucket' &&
+              isPlaying != null &&
+              mySongs.filter(
+                (song) =>
+                  song.playStatus === 'paused' || song.playStatus === 'yes'
+              ).length != 0 && (
+                <div className={'now-playing-widget'}>
+                  <span
+                    className={
                       mySongs.filter(
                         (song) =>
                           song.playStatus === 'paused' ||
                           song.playStatus === 'yes'
-                      )[0].title
-                    }`}
-                </span>
-                <span className="now-playing-buttons">
-                  {mySongs.filter((song) => song.playStatus === 'yes').length >
-                    0 && (
-                    <FaPause
-                      onClick={() =>
-                        pausePlaying(
-                          mySongs.filter((song) => song.playStatus === 'yes')[0]
-                        )
-                      }
-                    />
-                  )}
-                  {mySongs.filter((song) => song.playStatus === 'paused')
-                    .length > 0 && (
-                    <FaPlay
-                      onClick={() =>
-                        startUp(
-                          mySongs.filter(
-                            (song) => song.playStatus === 'paused'
-                          )[0]
-                        )
-                      }
-                    />
-                  )}
-                </span>
-              </div>
-            )}
-            <div>All songs &copy;Chris Howard - all rights&nbsp;reserved</div>
+                      ).length != 0 &&
+                      mySongs.filter(
+                        (song) =>
+                          song.playStatus === 'paused' ||
+                          song.playStatus === 'yes'
+                      )[0].showSong === true
+                        ? 'now-playing'
+                        : 'now-playing not-showing'
+                    }
+                  >
+                    Now playing:
+                  </span>
+                  <span
+                    className="now-playing-title"
+                    onClick={() => {
+                      mySongs.filter(
+                        (song) =>
+                          song.playStatus === 'paused' ||
+                          song.playStatus === 'yes'
+                      )[0].showSong === true && scrollToSong();
+                    }}
+                  >
+                    {mySongs.filter(
+                      (song) =>
+                        song.playStatus === 'paused' ||
+                        song.playStatus === 'yes'
+                    )[0] &&
+                      `${
+                        mySongs.filter(
+                          (song) =>
+                            song.playStatus === 'paused' ||
+                            song.playStatus === 'yes'
+                        )[0].title
+                      }`}
+                  </span>
+                  <span className="now-playing-buttons">
+                    {mySongs.filter((song) => song.playStatus === 'yes')
+                      .length > 0 && (
+                      <FaPause
+                        onClick={() =>
+                          pausePlaying(
+                            mySongs.filter(
+                              (song) => song.playStatus === 'yes'
+                            )[0]
+                          )
+                        }
+                      />
+                    )}
+                    {mySongs.filter((song) => song.playStatus === 'paused')
+                      .length > 0 && (
+                      <FaPlay
+                        onClick={() =>
+                          startUp(
+                            mySongs.filter(
+                              (song) => song.playStatus === 'paused'
+                            )[0]
+                          )
+                        }
+                      />
+                    )}
+                  </span>
+                </div>
+              )}
+            <div className="copyright-div">
+              {bucket === 'my-song-bucket' && (
+                <div
+                  className="back-to-top"
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }
+                >
+                  <MdKeyboardArrowUp /> Top
+                </div>
+              )}
+              All songs &copy;Chris Howard - all rights&nbsp;reserved
+            </div>
           </div>
         </div>
       </div>

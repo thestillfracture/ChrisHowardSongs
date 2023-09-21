@@ -27,9 +27,9 @@ const DownloadModal = ({
               <i>Pay</i>
               <i>Pal</i>
             </span>{' '}
-            (&quot;The Still Fracture&quot; is me)
-          </a>
-          .
+          </a>{' '}
+          or through Venmo @thestillfracture (&quot;The Still Fracture&quot; is
+          me) .
           <br />
           <br />
           You can also find more of my music at{' '}
@@ -65,8 +65,8 @@ const DownloadModal = ({
           <span
             style={{
               userSelect: 'all',
-              border: '1px solid',
-              padding: '0 0.4em',
+              border: '1px dashed',
+              padding: '0.1em 0.4em',
               fontSize: '0.8em',
             }}
           >

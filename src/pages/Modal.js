@@ -57,7 +57,7 @@ const Modal = ({ showModal, setModal, mySongs }) => {
 
         <ol>
           <li>
-            <b>Listen to songs on the home page (&quot;Song Selector&quot;):</b>
+            <b>Listen to songs on the &quot;Song Selector&quot; page:</b>
             <ul>
               <li key={'m1'}>
                 Listen to any song by clicking the Play{' '}
@@ -76,7 +76,7 @@ const Modal = ({ showModal, setModal, mySongs }) => {
           </li>
 
           <li>
-            <b>Add songs you like to your playlist:</b>
+            <b>Create a playlist:</b>
             <ul>
               <li key={'m5'}>
                 While listening to a song you can add it to your playlist if you
@@ -94,8 +94,8 @@ const Modal = ({ showModal, setModal, mySongs }) => {
 
           <li>
             <b>
-              Go to Your Player to listen exclusively to your songs and download
-              them:
+              Go to &quot;Your Player&quot; to listen exclusively to your
+              playlist or download it:
             </b>
             <ul>
               <li key={'m8'}>
@@ -115,8 +115,8 @@ const Modal = ({ showModal, setModal, mySongs }) => {
                 &quot;Download&quot; on desktop
               </li>
               <li key={'m12'}>
-                The songs will download to your device in a zipped folder,
-                ordered as you set them
+                The songs will download to your device in a .zip folder, ordered
+                as you set them
               </li>
             </ul>
           </li>
@@ -202,7 +202,7 @@ const Modal = ({ showModal, setModal, mySongs }) => {
           when the site is done. If you have any questions for me regarding my
           music or the site here are some ways to find me: <br />
           <ul>
-            <li>
+            <li key={'m100'}>
               <a
                 href="https://www.linkedin.com/in/chris-howard-105b8b14/"
                 target="_blank"
@@ -210,7 +210,7 @@ const Modal = ({ showModal, setModal, mySongs }) => {
                 LinkedIn Profile
               </a>
             </li>
-            <li>
+            <li key={'m101'}>
               <a
                 href="https://www.facebook.com/chris.howard.108889/"
                 target="_blank"
@@ -228,7 +228,7 @@ const Modal = ({ showModal, setModal, mySongs }) => {
             {mySongs.map(
               (song) =>
                 song.notes != '' && (
-                  <li>
+                  <li key={`m-${song.id}`}>
                     <b>{song.title}:</b> {song.notes}
                   </li>
                 )

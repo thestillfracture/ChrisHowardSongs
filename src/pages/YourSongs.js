@@ -1,4 +1,5 @@
 import Download from '../components/Download';
+import ManageSongsModal from '../components/ManageSongsModal';
 import {
   FaPlay,
   FaForward,
@@ -40,6 +41,9 @@ const YourSongs = ({
   curYourSongOrder,
   showDownloadModal,
   setDownloadModal,
+  mySongRef,
+  shuffle,
+  setShuffle,
 }) => {
   const yourSongRef = useRef({});
   yourSongRef.current = mySongs;
@@ -47,10 +51,11 @@ const YourSongs = ({
   const yourPlayAllRef = useRef({});
   yourPlayAllRef.current = playAll;
 
-  const [shuffle, setShuffle] = useState(false);
   const [menu, setMenu] = useState(false);
   const [marquee, setMarquee] = useState(false);
   const history = useHistory();
+  let marqueeInterval;
+  // clearInterval(marqueeInterval);
 
   useEffect(() => {
     document.title = 'Your Playlist | Songs by Chris Howard';
@@ -64,6 +69,9 @@ const YourSongs = ({
     if (mySongs.length > 0) {
       volumeKnob(volume, setVolume);
     }
+    window.onscroll = function () {
+      return;
+    };
   }, []);
 
   useEffect(() => {
@@ -90,18 +98,70 @@ const YourSongs = ({
   }, [history]);
 
   useEffect(() => {
+    if (
+      document.querySelectorAll('.mobile-readout-title-container').length > 0
+    ) {
+      document.querySelector('.mobile-readout-title-container').style.left =
+        '0px';
+    }
     setMarquee(false);
+    if (document.querySelectorAll('.current-song-title-copy').length === 1) {
+      document.querySelector('.current-song-title-copy').remove();
+    }
     setTimeout(function () {
       if (document.getElementById('mrp') != null) {
-        const overflowX =
-          document.getElementById('mrp').offsetWidth <
-          document.getElementById('mrp').scrollWidth;
+        const titleWidth = document.getElementById('mrp').scrollWidth;
+        const titleArea = document.getElementById('mrp').offsetWidth;
+        const overflowX = titleArea < titleWidth;
+        const titleElement = document.querySelector('#mrp .current-song-title');
         if (overflowX) {
-          setMarquee(true);
+          if (
+            document.querySelectorAll('.current-song-title-copy').length === 0
+          ) {
+            const currentTitle = document.querySelector(
+              '#mrp .current-song-title'
+            );
+            const newWidth = titleWidth * 2 + 100;
+            document.querySelector(
+              '#mrp .mobile-readout-title-container'
+            ).style.width = newWidth + 'px';
+            const secondTitle = document.createElement('div');
+            secondTitle.className = 'current-song-title-copy';
+            const getTitle = titleElement.innerHTML;
+            secondTitle.innerHTML = getTitle;
+            currentTitle.parentNode.insertBefore(
+              secondTitle,
+              currentTitle.nextSibling
+            );
+            marqueeInterval = setInterval(function () {
+              if (
+                document.querySelector('.mobile-readout-title-container') !=
+                null
+              ) {
+                let getLeft = parseInt(
+                  document.querySelector('.mobile-readout-title-container')
+                    .style.left
+                );
+                if (Math.abs(getLeft) >= titleWidth + 50) {
+                  getLeft = 0;
+                } else {
+                  getLeft = getLeft - 1;
+                }
+                document.querySelector(
+                  '.mobile-readout-title-container'
+                ).style.left = getLeft + 'px';
+              } else {
+                clearInterval(marqueeInterval);
+              }
+            }, 50);
+          }
         } else {
-          setMarquee(false);
+          document.querySelector('.mobile-readout-title-container').style.left =
+            '0px';
+          //setMarquee(false);
         }
       }
+      return () => marqueeInterval;
     }, 5000);
   }, [isPlaying]);
 
@@ -463,30 +523,36 @@ const YourSongs = ({
                   {shuffle === false && isPlaying !== null && (
                     <div className="mobile-readout-playing" id="mrp">
                       <div
-                        className={`current-song-title ${
-                          marquee === true ? 'marquee' : ''
-                        }`}
+                        className="mobile-readout-title-container"
+                        style={{ left: '0' }}
                       >
-                        {mySongs.map((song) =>
-                          song.playStatus != 'no' ? (
-                            <span
-                              key={song.id}
-                              className={
-                                mySongs.filter(
-                                  (song) => song.playStatus == 'paused'
-                                ).length > 0
-                                  ? 'blink'
-                                  : ''
-                              }
-                            >
-                              {song.title}
-                            </span>
-                          ) : (
-                            ''
-                          )
-                        )}
+                        <div
+                          className={`current-song-title ${
+                            marquee === true ? 'marquee' : ''
+                          }`}
+                        >
+                          {mySongs.map((song) =>
+                            song.playStatus === 'yes' ||
+                            song.playStatus === 'paused' ? (
+                              <span
+                                key={song.id}
+                                className={
+                                  mySongs.filter(
+                                    (song) => song.playStatus == 'paused'
+                                  ).length > 0
+                                    ? 'blink'
+                                    : ''
+                                }
+                              >
+                                {song.title}
+                              </span>
+                            ) : (
+                              ''
+                            )
+                          )}
+                        </div>
                       </div>
-                      <div>
+                      <div className="mobile-readout-album-name">
                         Chris Howard
                         <br />
                         Your Playlist
@@ -744,6 +810,25 @@ const YourSongs = ({
                       curYourSongOrder={curYourSongOrder}
                     />
                   ))}
+
+              {/* <ManageSongsModal
+                isPlaying={isPlaying}
+                setMySongs={setMySongs}
+                mySongs={mySongs}
+                setPlaying={setPlaying}
+                yourSongs={yourSongs}
+                startUp={startUp}
+                rewind={rewind}
+                pausePlaying={pausePlaying}
+                nextSongFn={nextSongFn}
+                bucket={bucket}
+                setYourSongOrder={setYourSongOrder}
+                setYourSongs={setYourSongs}
+                yourSongOrder={yourSongOrder}
+                curYourSongOrder={curYourSongOrder}
+                shuffle={shuffle}
+                setShuffle={setShuffle}
+              /> */}
             </div>
             <div className="mobile-songlist-header"></div>
           </div>

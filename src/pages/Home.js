@@ -47,7 +47,7 @@ const Home = ({
 
     observer.observe(el);
 
-    window.addEventListener('scroll', () => {
+    window.onscroll = function () {
       if (document.querySelector('.active-song') != null) {
         const t = document
           .querySelector('.active-song')
@@ -68,7 +68,16 @@ const Home = ({
             .classList.remove('now-playing-showing');
         }
       }
-    });
+      window.scrollY > 530
+        ? document.querySelector('body').classList.add('scrolled-page')
+        : document.querySelector('body').classList.remove('scrolled-page');
+    };
+
+    // window.addEventListener('scroll', () => {
+    //   window.location.pathname !== '/your-songs' && window.scrollY > 530
+    //     ? (document.querySelector('.back-to-top').style.opacity = '1')
+    //     : (document.querySelector('.back-to-top').style.opacity = '0');
+    // });
   }, []);
 
   const playAllClickEvent = () => {
@@ -165,6 +174,7 @@ const Home = ({
             mySongs={mySongs}
             filters={filters}
             toggleFilter={toggleFilter}
+            setFiltersShowing={setFiltersShowing}
           />
         </div>
       </div>

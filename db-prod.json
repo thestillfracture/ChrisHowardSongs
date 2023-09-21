@@ -2,7 +2,7 @@
     "songs": [
         {
             "id": 1,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Picture Perfect",
             "showSong": true,
             "url": "Picture-Perfect.mp3",
@@ -13,7 +13,7 @@
         },
         {
             "id": 3,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "One Step Ahead of Myself",
             "showSong": true,
             "url": "One-Step-Ahead-Of-Myself.mp3",
@@ -24,7 +24,7 @@
         },
         {
             "id": 66,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Need a Week Off",
             "showSong": true,
             "url": "Need-A-Week-Off.mp3",
@@ -34,7 +34,7 @@
         },
         {
             "id": 6,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Call the Policeman",
             "showSong": true,
             "url": "Call-The-Policeman.mp3",
@@ -45,7 +45,7 @@
         },
         {
             "id": 2,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "You Will Always Be Here",
             "showSong": true,
             "url": "You-Will-Always-Be-Here.mp3",
@@ -56,7 +56,7 @@
         },
         {
             "id": 12,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Heartsick",
             "showSong": true,
             "url": "Heartsick.mp3",
@@ -67,7 +67,7 @@
         },
         {
             "id": 4,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "The Tropical Seas",
             "showSong": true,
             "url": "The-Tropical-Seas.mp3",
@@ -78,7 +78,7 @@
         },
         {
             "id": 5,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Don't Try to Reach Me",
             "showSong": true,
             "url": "Dont-Try-To-Reach-Me.mp3",
@@ -89,7 +89,7 @@
         },
         {
             "id": 9,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Unbeknownst to Me",
             "showSong": true,
             "url": "Unbeknownst-To-Me.mp3",
@@ -100,7 +100,7 @@
         },
         {
             "id": 7,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "This Sudden Sadness is You",
             "showSong": true,
             "url": "This-Sudden-Sadness-Is-You.mp3",
@@ -111,7 +111,7 @@
         },
         {
             "id": 59,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Face Time",
             "showSong": true,
             "url": "Face-Time.mp3",
@@ -122,7 +122,7 @@
         },
         {
             "id": 8,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Echoing Dream",
             "showSong": true,
             "url": "Echoing-Dream.mp3",
@@ -133,7 +133,7 @@
         },
         {
             "id": 10,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Romeo",
             "showSong": true,
             "url": "Romeo.mp3",
@@ -144,7 +144,7 @@
         },
         {
             "id": 11,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "She",
             "showSong": true,
             "url": "She.mp3",
@@ -155,7 +155,7 @@
         },
         {
             "id": 34,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Your Headlights",
             "showSong": true,
             "url": "Your-Headlights.mp3",
@@ -166,7 +166,7 @@
         },
         {
             "id": 13,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Alone",
             "showSong": true,
             "url": "Alone.mp3",
@@ -177,7 +177,7 @@
         },
         {
             "id": 14,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "One Place I Know",
             "showSong": true,
             "url": "One-Place-I-Know.mp3",
@@ -188,7 +188,7 @@
         },
         {
             "id": 15,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Let's Take the Long Way",
             "showSong": true,
             "url": "Lets-Take-The-Long-Way.mp3",
@@ -199,7 +199,7 @@
         },
         {
             "id": 16,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "I Let Your Soul Down",
             "showSong": true,
             "url": "I-Let-Your-Soul-Down.mp3",
@@ -210,7 +210,7 @@
         },
         {
             "id": 17,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Slipping Away From Me",
             "showSong": true,
             "url": "Slipping-Away-From-Me.mp3",
@@ -221,7 +221,7 @@
         },
         {
             "id": 18,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "The Escape",
             "showSong": true,
             "url": "The-Escape.mp3",
@@ -232,7 +232,7 @@
         },
         {
             "id": 19,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "My Dream",
             "showSong": true,
             "url": "My-Dream.mp3",
@@ -243,7 +243,7 @@
         },
         {
             "id": 20,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Like Sunrise",
             "showSong": true,
             "url": "Like-Sunrise.mp3",
@@ -254,7 +254,7 @@
         },
         {
             "id": 21,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Echoing Dream (jazz version)",
             "showSong": true,
             "url": "Echoing-Dream-Jazz.mp3",
@@ -265,7 +265,7 @@
         },
         {
             "id": 22,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "You Fell Softly",
             "showSong": true,
             "url": "You-Fell-Softly.mp3",
@@ -276,7 +276,7 @@
         },
         {
             "id": 23,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Theme and Variation",
             "showSong": true,
             "url": "Theme-And-Variation.mp3",
@@ -287,7 +287,7 @@
         },
         {
             "id": 24,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Clown Dance",
             "showSong": true,
             "url": "Clown-Dance.mp3",
@@ -298,7 +298,7 @@
         },
         {
             "id": 25,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Written in the Stars",
             "showSong": true,
             "url": "Written-In-The-Stars.mp3",
@@ -309,7 +309,7 @@
         },
         {
             "id": 26,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "I Saw You Where You Are",
             "showSong": true,
             "url": "I-Saw-You-Where-You-Are.mp3",
@@ -320,7 +320,7 @@
         },
         {
             "id": 27,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Can't Wait For Tomorrow",
             "showSong": true,
             "url": "Cant-Wait-For-Tomorrow.mp3",
@@ -331,7 +331,7 @@
         },
         {
             "id": 28,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Every Time I Think I've Found You",
             "showSong": true,
             "url": "Every-Time-I-Think-Ive-Found-You.mp3",
@@ -342,7 +342,7 @@
         },
         {
             "id": 29,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Dance #4",
             "showSong": true,
             "url": "Dance-4.mp3",
@@ -353,7 +353,7 @@
         },
         {
             "id": 30,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Holding Ashes",
             "showSong": true,
             "url": "Holding-Ashes.mp3",
@@ -364,7 +364,7 @@
         },
         {
             "id": 31,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Hoping",
             "showSong": true,
             "url": "Hoping.mp3",
@@ -375,7 +375,7 @@
         },
         {
             "id": 32,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Something Has Gone",
             "showSong": true,
             "url": "Something-Has-Gone.mp3",
@@ -386,7 +386,7 @@
         },
         {
             "id": 33,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "In the Long Run",
             "showSong": true,
             "url": "In-The-Long-Run.mp3",
@@ -397,7 +397,7 @@
         },
         {
             "id": 35,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Florison d'Nuit",
             "showSong": true,
             "url": "Florison-Dnuit.mp3",
@@ -408,7 +408,7 @@
         },
         {
             "id": 36,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "D.A.M.P.",
             "showSong": true,
             "url": "DAMP.mp3",
@@ -419,7 +419,7 @@
         },
         {
             "id": 37,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Another Way",
             "showSong": true,
             "url": "Another-Way.mp3",
@@ -430,7 +430,7 @@
         },
         {
             "id": 38,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Once You Called it Home",
             "showSong": true,
             "url": "Once-You-Called-It-Home.mp3",
@@ -441,7 +441,7 @@
         },
         {
             "id": 39,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Gone Away",
             "showSong": true,
             "url": "Gone-Away.mp3",
@@ -452,7 +452,7 @@
         },
         {
             "id": 40,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Try to Lean on Me",
             "showSong": true,
             "url": "Try-To-Lean-On-Me.mp3",
@@ -463,7 +463,7 @@
         },
         {
             "id": 41,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Seventeen",
             "showSong": true,
             "url": "Seventeen.mp3",
@@ -474,7 +474,7 @@
         },
         {
             "id": 42,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Many Faces of E",
             "showSong": true,
             "url": "Many-Faces-Of-E.mp3",
@@ -485,7 +485,7 @@
         },
         {
             "id": 43,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Sonata",
             "showSong": true,
             "url": "Sonata.mp3",
@@ -496,7 +496,7 @@
         },
         {
             "id": 44,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "A Storm Hits You on the Blue Water",
             "showSong": true,
             "url": "A-Storm-Hits-You-On-The-Blue-Water.mp3",
@@ -507,7 +507,7 @@
         },
         {
             "id": 45,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "The Road I'm Traveling On",
             "showSong": true,
             "url": "The-Road-Im-Traveling-On.mp3",
@@ -518,7 +518,7 @@
         },
         {
             "id": 46,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "You Should Get Out and Fly Away",
             "showSong": true,
             "url": "You-Should-Get-Out-And-Fly-Away.mp3",
@@ -529,7 +529,7 @@
         },
         {
             "id": 47,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Just Tell Me What Your Planet's Called",
             "showSong": true,
             "url": "Just-Tell-Me-What-Your-Planets-Called.mp3",
@@ -540,7 +540,7 @@
         },
         {
             "id": 48,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "How Come You Don't Say 'I Love You'?",
             "showSong": true,
             "url": "How-Come-You-Dont-Say-I-Love-You.mp3",
@@ -551,7 +551,7 @@
         },
         {
             "id": 49,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "I Tried to Warn You",
             "showSong": true,
             "url": "I-Tried-To-Warn-You.mp3",
@@ -562,7 +562,7 @@
         },
         {
             "id": 50,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Day by Day by Day",
             "showSong": true,
             "url": "Day-By-Day-By-Day.mp3",
@@ -573,7 +573,7 @@
         },
         {
             "id": 51,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Your Thicketed Garden",
             "showSong": true,
             "url": "Your-Thicketed-Garden.mp3",
@@ -584,7 +584,7 @@
         },
         {
             "id": 52,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Eureka Peak",
             "showSong": true,
             "url": "Eureka-Peak.mp3",
@@ -595,7 +595,7 @@
         },
         {
             "id": 53,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Rain All Over Your Parade",
             "showSong": true,
             "url": "Rain-All-Over-Your-Parade.mp3",
@@ -606,7 +606,7 @@
         },
         {
             "id": 54,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Project 6",
             "showSong": true,
             "url": "Project-6.mp3",
@@ -617,7 +617,7 @@
         },
         {
             "id": 55,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Endless Ocean",
             "showSong": true,
             "url": "Endless-Ocean.mp3",
@@ -628,7 +628,7 @@
         },
         {
             "id": 56,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Little Metal Box",
             "showSong": true,
             "url": "Little-Metal-Box.mp3",
@@ -639,7 +639,7 @@
         },
         {
             "id": 57,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Prelude",
             "showSong": true,
             "url": "Prelude.mp3",
@@ -650,7 +650,7 @@
         },
         {
             "id": 58,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "This Time",
             "showSong": true,
             "url": "This-Time.mp3",
@@ -661,7 +661,7 @@
         },
         {
             "id": 60,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "You Always Make Me Smile",
             "showSong": true,
             "url": "You-Always-Make-Me-Smile.mp3",
@@ -672,7 +672,7 @@
         },
         {
             "id": 61,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Take Charge",
             "showSong": true,
             "url": "Take-Charge.mp3",
@@ -683,7 +683,7 @@
         },
         {
             "id": 62,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "Incompleted",
             "showSong": true,
             "url": "Incompleted.mp3",
@@ -694,7 +694,7 @@
         },
         {
             "id": 63,
-            "playStatus": false,
+            "playStatus": "no",
             "title": "I Wish You'd Dream Out Loud",
             "showSong": true,
             "url": "I-Wish-Youd-Dream-Out-Loud.mp3",

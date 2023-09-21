@@ -24,7 +24,7 @@ const SongList = ({
   curYourSongOrder,
 }) => {
   useEffect(() => {
-    if (isPlaying != null) {
+    if (isPlaying != null && isPlaying.ended != true) {
       isPlaying.pause();
       setPlaying({});
     }
