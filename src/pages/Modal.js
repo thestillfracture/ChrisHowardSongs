@@ -130,8 +130,10 @@ const Modal = ({ showModal, setModal, mySongs }) => {
 
         <h4 id="what-is-it">What is It?</h4>
         <p>
-          This app was built from scratch as a ReactJS native project using only
-          React functionality along with some ES6 vanilla JavaScript.
+          This app was built from scratch as a ReactJS native project. As a
+          personal challenge, and for the sake of performance, my goal was to
+          create this using only React core functionality and ES6 vanilla
+          JavaScript without any added JS libraries.
         </p>
         <p>
           There are no images on the site. Everything you see is generated via
@@ -153,7 +155,11 @@ const Modal = ({ showModal, setModal, mySongs }) => {
           >
             song visualizer
           </a>{' '}
-          on the desktop version of the playlist.
+          on the desktop version of the playlist. And I have to mention{' '}
+          <a href="https://www.traversymedia.com/" target="_blank">
+            Traversy Media
+          </a>{' '}
+          as an excellent resource for learning React and JavaScript in general.
         </p>
         <p>
           More details will be provided on all of this in the future. I hope to
@@ -174,6 +180,11 @@ const Modal = ({ showModal, setModal, mySongs }) => {
           All songs are written, performed and recorded by myself, Chris Howard,
           with some exceptions noted below. I respectfully ask that you respect
           the copyrighted nature of the songs if you download them. <br />
+          <br />
+          The production quality, even for the &quot;produced&quot; songs,
+          varies as I have never had great tools for production/mastering...oh
+          well.
+          <br />
           <br />
           You can download the songs from this site for free, but if you're
           feeling generous and would like to pay some amount (of your choosing)
@@ -224,6 +235,14 @@ const Modal = ({ showModal, setModal, mySongs }) => {
         </div>
         <div>
           <h4 id="song-credits">Song Credits:</h4>
+          <span
+            style={{
+              fontSize: '0.8em',
+              fontWeight: 'normal',
+            }}
+          >
+            &nbsp;(Last but certainly not least)
+          </span>
           <ul>
             {mySongs.map(
               (song) =>

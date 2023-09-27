@@ -26,16 +26,6 @@ const App = () => {
   const [volume, setVolume] = useState(0.64);
   const [showDownloadModal, setDownloadModal] = useState(false);
   const [shuffle, setShuffle] = useState(false);
-  // const firebaseConfig = {
-  //   apiKey: 'AIzaSyCGQ0tYppWFJkuSxBhOpkH0xVDmX245Vdc',
-  //   authDomain: 'project-id.firebaseapp.com',
-  //   databaseURL: 'https://project-id.firebaseio.com',
-  //   projectId: 'project-id',
-  //   storageBucket: 'project-id.appspot.com',
-  //   messagingSenderId: '637908496727',
-  //   appId: '2:637908496727:web:a4284b4c99e329d5',
-  //   measurementId: 'G-N0MJD7BDPW',
-  // };
 
   useEffect(() => {
     if (isPlaying != null) {
@@ -45,14 +35,53 @@ const App = () => {
 
   useEffect(() => {
     const getSongs = async () => {
+      //let res;
+      // if (window.location.href.indexOf('localhost') > 0) {
+      //   res = await fetch('http://localhost:5000/songs');
+      //   let data = await res.json();
+      //   if (localStorage.length != 0) {
+      //     const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
+      //     let data = await data.map((song) =>
+      //       getLocalStorage.filter((f, song) => f === song.id).length > 0
+      //         ? { ...song, inYourSongs: true }
+      //         : { ...song }
+      //     );
+      //   }
+      //   initSort(data);
+      //   findFilters(data);
+      //   return;
+      // }
+      // res = await fetch('db.json');
+      // let data = await res.json();
+      // if (localStorage.length != 0) {
+      //   const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
+      //   data.songs = await data.songs.map((song) =>
+      //     getLocalStorage.filter((f, song) => f === song.id).length > 0
+      //       ? { ...song, inYourSongs: true }
+      //       : { ...song }
+      //   );
+      // }
+      // initSort(data);
+      // findFilters(data);
+
+      let data;
       let res;
       if (window.location.href.indexOf('localhost') > 0) {
         res = await fetch('http://localhost:5000/songs');
+        data = await res.json();
       } else {
         res = await fetch('db.json');
-        // const app = initializeApp(firebaseConfig);
+        data = await res.json();
+        // if (localStorage.length != 0) {
+        //   const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
+        //   data.songs = await data.songs.map((song) =>
+        //     getLocalStorage.filter((f, song) => f === song.id).length > 0
+        //       ? { ...song, inYourSongs: true }
+        //       : { ...song }
+        //   );
+        // }
+        data = data.songs;
       }
-      let data = await res.json();
       if (localStorage.length != 0) {
         const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
         data = await data.map((song) =>
@@ -63,6 +92,7 @@ const App = () => {
       }
       initSort(data);
       findFilters(data);
+
       // LOCAL - to start the server: npm run server - optional: comment out initVisualizer() instances to avoid CORS isses
       // } else {
       //   // PRODUCTION
@@ -586,17 +616,15 @@ const App = () => {
             song.id === curSong.id
               ? {
                   ...song,
-                  showSong: mySongRef.current.filter(
-                    (f) => f.id === song.id
-                  )[0],
+                  showSong: mySongRef.current.filter((f) => f.id === song.id)[0]
+                    .showSong,
                   inYourSongs: yourSongStatus,
                   playStatus: 'no',
                 }
               : {
                   ...song,
-                  showSong: mySongRef.current.filter(
-                    (f) => f.id === song.id
-                  )[0],
+                  showSong: mySongRef.current.filter((f) => f.id === song.id)[0]
+                    .showSong,
                   playStatus: 'no',
                 }
           )

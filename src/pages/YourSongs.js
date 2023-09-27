@@ -1,5 +1,5 @@
 import Download from '../components/Download';
-import ManageSongsModal from '../components/ManageSongsModal';
+// import ManageSongsModal from '../components/ManageSongsModal';
 import {
   FaPlay,
   FaForward,
@@ -41,7 +41,6 @@ const YourSongs = ({
   curYourSongOrder,
   showDownloadModal,
   setDownloadModal,
-  mySongRef,
   shuffle,
   setShuffle,
 }) => {
@@ -52,10 +51,8 @@ const YourSongs = ({
   yourPlayAllRef.current = playAll;
 
   const [menu, setMenu] = useState(false);
-  const [marquee, setMarquee] = useState(false);
   const history = useHistory();
   let marqueeInterval;
-  // clearInterval(marqueeInterval);
 
   useEffect(() => {
     document.title = 'Your Playlist | Songs by Chris Howard';
@@ -104,36 +101,45 @@ const YourSongs = ({
       document.querySelector('.mobile-readout-title-container').style.left =
         '0px';
     }
-    setMarquee(false);
     if (document.querySelectorAll('.current-song-title-copy').length === 1) {
       document.querySelector('.current-song-title-copy').remove();
     }
-    setTimeout(function () {
-      if (document.getElementById('mrp') != null) {
-        const titleWidth = document.getElementById('mrp').scrollWidth;
-        const titleArea = document.getElementById('mrp').offsetWidth;
-        const overflowX = titleArea < titleWidth;
-        const titleElement = document.querySelector('#mrp .current-song-title');
-        if (overflowX) {
-          if (
-            document.querySelectorAll('.current-song-title-copy').length === 0
-          ) {
-            const currentTitle = document.querySelector(
-              '#mrp .current-song-title'
-            );
-            const newWidth = titleWidth * 2 + 100;
-            document.querySelector(
-              '#mrp .mobile-readout-title-container'
-            ).style.width = newWidth + 'px';
-            const secondTitle = document.createElement('div');
-            secondTitle.className = 'current-song-title-copy';
-            const getTitle = titleElement.innerHTML;
-            secondTitle.innerHTML = getTitle;
-            currentTitle.parentNode.insertBefore(
-              secondTitle,
-              currentTitle.nextSibling
-            );
-            marqueeInterval = setInterval(function () {
+    if (document.getElementById('mrp') != null) {
+      const titleWidth = document.getElementById('mrp').scrollWidth;
+      const titleArea = document.getElementById('mrp').offsetWidth;
+      const overflowX = titleArea < titleWidth;
+      const titleElement = document.querySelector('#mrp .current-song-title');
+      if (overflowX) {
+        if (
+          document.querySelectorAll('.current-song-title-copy').length === 0
+        ) {
+          const currentTitle = document.querySelector(
+            '#mrp .current-song-title'
+          );
+          const newWidth = titleWidth * 2 + 100;
+          document.querySelector(
+            '#mrp .mobile-readout-title-container'
+          ).style.width = newWidth + 'px';
+          const secondTitle = document.createElement('div');
+          secondTitle.className = 'current-song-title-copy';
+          const getTitle = titleElement.innerHTML;
+          secondTitle.innerHTML = getTitle;
+          currentTitle.parentNode.insertBefore(
+            secondTitle,
+            currentTitle.nextSibling
+          );
+          let fakeTimeout = 0;
+          // window.onresize = function () {
+          //   if (
+          //     document.querySelector('.mobile-readout-title-container') != null
+          //   ) {
+          //     document.querySelector(
+          //       '.mobile-readout-title-container'
+          //     ).style.left = '0';
+          //   }
+          // };
+          marqueeInterval = setInterval(function () {
+            if (fakeTimeout > 100) {
               if (
                 document.querySelector('.mobile-readout-title-container') !=
                 null
@@ -153,16 +159,33 @@ const YourSongs = ({
               } else {
                 clearInterval(marqueeInterval);
               }
-            }, 50);
-          }
-        } else {
-          document.querySelector('.mobile-readout-title-container').style.left =
-            '0px';
-          //setMarquee(false);
+            }
+            fakeTimeout++;
+          }, 50);
         }
+      } else {
+        document.querySelector('.mobile-readout-title-container').style.left =
+          '0px';
       }
-      return () => marqueeInterval;
-    }, 5000);
+    }
+
+    return () => {
+      clearInterval(marqueeInterval);
+      if (
+        document.querySelectorAll('.mobile-readout-title-container').length > 0
+      ) {
+        document.querySelector('.mobile-readout-title-container').style.left =
+          '0px';
+      }
+      if (
+        document.querySelectorAll('#mrp .mobile-readout-title-container')
+          .length > 0
+      ) {
+        document.querySelector(
+          '#mrp .mobile-readout-title-container'
+        ).style.width = 'auto';
+      }
+    };
   }, [isPlaying]);
 
   useEffect(() => {
@@ -177,7 +200,6 @@ const YourSongs = ({
   useEffect(() => {
     if (document.getElementById('slider-content') != null) {
       swipeFn(midSlide, leftSlide, rightSlide);
-      //let vol = typeof volume;
     }
   }, [menu]);
 
@@ -353,6 +375,20 @@ const YourSongs = ({
     sw3.classList.replace('swiper-right', 'swiper-focused');
   };
 
+  const removeAllSongs = () => {
+    let conftext = 'Are you sure you want to clear out your songlist?';
+    if (window.confirm(conftext) === true) {
+      setMySongs(
+        mySongs.map((song) => (song = { ...song, inYourSongs: false }))
+      );
+      setYourSongOrder([]);
+      localStorage.clear();
+      history.push('/');
+    } else {
+      return;
+    }
+  };
+
   return (
     <div id="your-songs-page" className="bucket-container">
       {mySongs.length != 0 && (
@@ -526,11 +562,7 @@ const YourSongs = ({
                         className="mobile-readout-title-container"
                         style={{ left: '0' }}
                       >
-                        <div
-                          className={`current-song-title ${
-                            marquee === true ? 'marquee' : ''
-                          }`}
-                        >
+                        <div className="current-song-title">
                           {mySongs.map((song) =>
                             song.playStatus === 'yes' ||
                             song.playStatus === 'paused' ? (
@@ -757,6 +789,9 @@ const YourSongs = ({
                 onClick={() => setShuffle(false)}
               >
                 Close
+              </div>
+              <div className="remove-all-link" onClick={() => removeAllSongs()}>
+                Remove All
               </div>
               {yourSongOrder.length == 0
                 ? mySongs.map(

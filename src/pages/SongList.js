@@ -47,7 +47,6 @@ const SongList = ({
                 mySongs={mySongs}
                 isPlaying={isPlaying}
                 playAll={playAll}
-                setPlaying={setPlaying}
                 mySongRef={mySongRef}
                 startUp={startUp}
                 rewind={rewind}

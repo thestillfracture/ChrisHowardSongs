@@ -18,7 +18,6 @@ const Song = ({
   setMySongs,
   mySongs,
   isPlaying,
-  setPlaying,
   startUp,
   rewind,
   pausePlaying,
@@ -73,7 +72,6 @@ const Song = ({
   };
 
   const mobileSortStart = (e, song) => {
-    // debugger;
     if (bucket === 'your-song-bucket') {
       if (e.target.parentElement.className === 'remove-x') {
         removeSong(song);
@@ -134,25 +132,25 @@ const Song = ({
           // it will go at the start if you let go above the list
           e.currentTarget.style.top = firstCont + 'px';
           const checkFirst = document
-            .querySelector('.close-song-list')
+            .querySelector('.remove-all-link')
             .nextElementSibling.classList.contains('moving-song');
           if (checkFirst) {
             document
-              .querySelector('.close-song-list')
+              .querySelector('.remove-all-link')
               .nextElementSibling.nextElementSibling.classList.add(
                 'hovered-song'
               );
             document
-              .querySelector('.close-song-list')
+              .querySelector('.remove-all-link')
               .nextElementSibling.nextElementSibling.classList.add(
                 'first-song-hovered'
               );
           } else {
             document
-              .querySelector('.close-song-list')
+              .querySelector('.remove-all-link')
               .nextElementSibling.classList.add('hovered-song');
             document
-              .querySelector('.close-song-list')
+              .querySelector('.remove-all-link')
               .nextElementSibling.classList.add('first-song-hovered');
           }
         } else {
@@ -280,25 +278,25 @@ const Song = ({
         // it will go at the start if you let go above the list
         e.currentTarget.style.top = firstCont + 'px';
         const checkFirst = document
-          .querySelector('.close-song-list')
+          .querySelector('.remove-all-link')
           .nextElementSibling.classList.contains('moving-song');
         if (checkFirst) {
           document
-            .querySelector('.close-song-list')
+            .querySelector('.remove-all-link')
             .nextElementSibling.nextElementSibling.classList.add(
               'hovered-song'
             );
           document
-            .querySelector('.close-song-list')
+            .querySelector('.remove-all-link')
             .nextElementSibling.nextElementSibling.classList.add(
               'first-song-hovered'
             );
         } else {
           document
-            .querySelector('.close-song-list')
+            .querySelector('.remove-all-link')
             .nextElementSibling.classList.add('hovered-song');
           document
-            .querySelector('.close-song-list')
+            .querySelector('.remove-all-link')
             .nextElementSibling.classList.add('first-song-hovered');
         }
       } else {
@@ -377,7 +375,11 @@ const Song = ({
 
   return (
     <div
-      className="song-container"
+      className={
+        mySongs.filter((song) => song.playStatus == 'paused').length > 0
+          ? 'song-container paused'
+          : 'song-container'
+      }
       id={['song-id-', song.id].join('').replace(',', '')}
       key={song.id}
       onTouchMove={(e) => mobileSortStart(e, song)}
@@ -389,8 +391,7 @@ const Song = ({
           song.playStatus !== 'no'
             ? ['song', 'active-song', 'song-id-' + song.id].join(' ')
             : ['song', 'song-id-' + song.id].join(' ')
-        } 
-            ${song.inYourSongs === true ? 'added-to-playlist' : ''}`}
+        }`}
         onClick={
           song.playStatus !== 'yes'
             ? () => {
@@ -444,20 +445,6 @@ const Song = ({
       {bucket === 'my-song-bucket' && (
         <>
           <div className="song-buttons">
-            {song.inYourSongs === false &&
-              localStorage.length === 0 &&
-              JSON.parse(localStorage.getItem('songs')).filter(
-                (f) => f === song.id
-              ).length > 0 &&
-              (song.playStatus === 'yes' || song.playStatus === 'paused') && (
-                <button
-                  className="add-to-playlist-button"
-                  onClick={(e) => addSongToPlaylist(e)}
-                >
-                  Add to Your Playlist <FaHeart className="add-song-icon" />
-                </button>
-              )}
-
             {(song.inYourSongs === true ||
               (localStorage.length != 0 &&
                 JSON.parse(localStorage.getItem('songs')).filter(
@@ -476,6 +463,20 @@ const Song = ({
                 </Link>
               </div>
             )}
+
+            {song.inYourSongs === false &&
+              // localStorage.length === 0 &&
+              // JSON.parse(localStorage.getItem('songs')).filter(
+              //   (f) => f === song.id
+              // ).length > 0 &&
+              (song.playStatus === 'yes' || song.playStatus === 'paused') && (
+                <button
+                  className="add-to-playlist-button"
+                  onClick={(e) => addSongToPlaylist(e)}
+                >
+                  Add to Your Playlist <FaHeart className="add-song-icon" />
+                </button>
+              )}
             {song.playStatus === 'yes' && (
               <MdOutlineReplay
                 className="rewind"
