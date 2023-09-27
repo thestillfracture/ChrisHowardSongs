@@ -35,35 +35,6 @@ const App = () => {
 
   useEffect(() => {
     const getSongs = async () => {
-      //let res;
-      // if (window.location.href.indexOf('localhost') > 0) {
-      //   res = await fetch('http://localhost:5000/songs');
-      //   let data = await res.json();
-      //   if (localStorage.length != 0) {
-      //     const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
-      //     let data = await data.map((song) =>
-      //       getLocalStorage.filter((f, song) => f === song.id).length > 0
-      //         ? { ...song, inYourSongs: true }
-      //         : { ...song }
-      //     );
-      //   }
-      //   initSort(data);
-      //   findFilters(data);
-      //   return;
-      // }
-      // res = await fetch('db.json');
-      // let data = await res.json();
-      // if (localStorage.length != 0) {
-      //   const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
-      //   data.songs = await data.songs.map((song) =>
-      //     getLocalStorage.filter((f, song) => f === song.id).length > 0
-      //       ? { ...song, inYourSongs: true }
-      //       : { ...song }
-      //   );
-      // }
-      // initSort(data);
-      // findFilters(data);
-
       let data;
       let res;
       if (window.location.href.indexOf('localhost') > 0) {
@@ -72,14 +43,6 @@ const App = () => {
       } else {
         res = await fetch('db.json');
         data = await res.json();
-        // if (localStorage.length != 0) {
-        //   const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
-        //   data.songs = await data.songs.map((song) =>
-        //     getLocalStorage.filter((f, song) => f === song.id).length > 0
-        //       ? { ...song, inYourSongs: true }
-        //       : { ...song }
-        //   );
-        // }
         data = data.songs;
       }
       if (localStorage.length != 0) {
@@ -92,23 +55,6 @@ const App = () => {
       }
       initSort(data);
       findFilters(data);
-
-      // LOCAL - to start the server: npm run server - optional: comment out initVisualizer() instances to avoid CORS isses
-      // } else {
-      //   // PRODUCTION
-      //   const res = await fetch('db.json');
-      //   let data = await res.json();
-      //   if (localStorage.length != 0) {
-      //     const getLocalStorage = JSON.parse(localStorage.getItem('songs'));
-      //     data.songs = await data.songs.map((song) =>
-      //       getLocalStorage.filter((f, song) => f === song.id).length > 0
-      //         ? { ...song, inYourSongs: true }
-      //         : { ...song }
-      //     );
-      //   }
-      //   initSort(data.songs);
-      //   findFilters(data.songs);
-      // }
     };
 
     getSongs();
@@ -131,11 +77,7 @@ const App = () => {
   useEffect(() => {
     if (yourSongOrder.length !== 0) {
       // we don't want to wipe this out on a fresh page load
-      // if (bucket === 'my-song-bucket') {
       localStorage.setItem('songs', JSON.stringify(yourSongOrder));
-      // } else {
-      // localStorage.setItem('songs', JSON.stringify(yourSongOrder));
-      // }
     }
     setMySongs(
       mySongs.map((song) =>
@@ -145,15 +87,6 @@ const App = () => {
       )
     );
   }, [yourSongOrder]);
-
-  // window.addEventListener('scroll', () => {
-  //   window.location.pathname !== '/your-songs' && window.scrollY > 530
-  //     ? (document.querySelector('.back-to-top').style.opacity = '1')
-  //     : (document.querySelector('.back-to-top').style.opacity = '0');
-  // });
-  // window.onscroll = function(){
-  //   if(window.scrollY >
-  // }
 
   // current state of my songs - including after sorting
   const mySongRef = useRef({});
@@ -278,14 +211,6 @@ const App = () => {
       })
     );
   };
-
-  // const checkLocalStorage = () => {
-  //   setMySongs(
-  //     mySongs.map((song) =>
-  //       1 === 1 ? { ...song, inYourSongs: true } : { ...song }
-  //     )
-  //   );
-  // };
 
   const findFilters = (filterData) => {
     const qual = [];
