@@ -13,11 +13,9 @@ const Download = ({
   setDownloadModal,
 }) => {
   const zipAndDownload = () => {
-    //setTimeout(function () {
     document
       .getElementsByClassName('disc-holder')[0]
       .classList.add('drawer-open');
-    //}, 10);
 
     const download = (url) => {
       return fetch(url).then((resp) => resp.blob());
@@ -70,7 +68,8 @@ const Download = ({
     };
 
     const downloadAndZip = (urls) => {
-      const songCount = mySongs.filter((song) => song.inYourSongs === true);
+      // const songCount = mySongs.filter((song) => song.inYourSongs === true);
+      const songCount = yourSongOrder;
       if (songCount.length > 0) {
         return downloadByGroup(urls, 5).then(exportZip).then(closeDrawer);
       } else {
@@ -87,14 +86,6 @@ const Download = ({
     );
 
     downloadAndZip(urls);
-
-    // setTimeout(function () {
-    //   if (document.getElementsByClassName('disc-holder').length > 0) {
-    //     document
-    //       .getElementsByClassName('disc-holder')[0]
-    //       .classList.remove('drawer-open');
-    //   }
-    // }, 6000);
   };
 
   return (
@@ -105,7 +96,6 @@ const Download = ({
       {showDownloadModal && (
         <DownloadModal
           setDownloadModal={setDownloadModal}
-          showDownloadModal={setDownloadModal}
           zipAndDownload={zipAndDownload}
           yourSongOrder={yourSongOrder}
         />

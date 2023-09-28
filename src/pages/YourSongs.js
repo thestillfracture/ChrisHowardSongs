@@ -129,15 +129,6 @@ const YourSongs = ({
             currentTitle.nextSibling
           );
           let fakeTimeout = 0;
-          // window.onresize = function () {
-          //   if (
-          //     document.querySelector('.mobile-readout-title-container') != null
-          //   ) {
-          //     document.querySelector(
-          //       '.mobile-readout-title-container'
-          //     ).style.left = '0';
-          //   }
-          // };
           marqueeInterval = setInterval(function () {
             if (fakeTimeout > 100) {
               if (

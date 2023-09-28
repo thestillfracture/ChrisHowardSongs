@@ -18,7 +18,6 @@ const Home = ({
   toggleFilter,
   setModal,
   showModal,
-  setSort,
   curSort,
   setSorting,
   setBucket,
@@ -53,16 +52,10 @@ const Home = ({
           .querySelector('.active-song')
           .getBoundingClientRect().top;
         if (t < 0 || t > window.innerHeight - 50) {
-          // document
-          //   .querySelector('.now-playing-widget')
-          //   .classList.add('show-now-playing-widget');
           document
             .querySelector('.copyright')
             .classList.add('now-playing-showing');
         } else {
-          // document
-          //   .querySelector('.now-playing-widget')
-          //   .classList.remove('show-now-playing-widget');
           document
             .querySelector('.copyright')
             .classList.remove('now-playing-showing');
@@ -72,12 +65,6 @@ const Home = ({
         ? document.querySelector('body').classList.add('scrolled-page')
         : document.querySelector('body').classList.remove('scrolled-page');
     };
-
-    // window.addEventListener('scroll', () => {
-    //   window.location.pathname !== '/your-songs' && window.scrollY > 530
-    //     ? (document.querySelector('.back-to-top').style.opacity = '1')
-    //     : (document.querySelector('.back-to-top').style.opacity = '0');
-    // });
   }, []);
 
   const playAllClickEvent = () => {
@@ -171,7 +158,6 @@ const Home = ({
       >
         <div className="filters">
           <Filters
-            mySongs={mySongs}
             filters={filters}
             toggleFilter={toggleFilter}
             setFiltersShowing={setFiltersShowing}
@@ -179,13 +165,7 @@ const Home = ({
         </div>
       </div>
       <div className="selector-sort">
-        <Sort
-          setSorting={setSorting}
-          setSort={setSort}
-          curSort={curSort}
-          setMySongs={setMySongs}
-          mySongs={mySongs}
-        />
+        <Sort curSort={curSort} setSorting={setSorting} />
       </div>
 
       <div className="bucket">
@@ -225,7 +205,6 @@ const Home = ({
             mySongs={mySongs}
             isPlaying={isPlaying}
             setPlaying={setPlaying}
-            setPlayAll={setPlayAll}
             startUp={startUp}
             rewind={rewind}
             pausePlaying={pausePlaying}

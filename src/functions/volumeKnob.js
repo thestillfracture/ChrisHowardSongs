@@ -58,9 +58,6 @@ export const volumeKnob = function (volume, setVolume) {
       rad2deg = 180 / Math.PI,
       originalEvent = e;
     knob.onmousemove = function (e) {
-      // touchmove.rem
-      //e = originalEvent.touches ? originalEvent.touches[0] : e;
-
       a = center.y - e.pageY;
       b = center.x - e.pageX;
       deg = Math.atan2(a, b) * rad2deg;

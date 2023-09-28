@@ -17,8 +17,6 @@ const ManageSongsModal = (
   shuffle,
   setShuffle
 ) => {
-  //   debugger;
-
   return (
     <div
       className={`song-list ${shuffle === true && 'show-desktop-shuffle'}`}

@@ -1,8 +1,3 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@800&display=swap'); */
-/* UNUSED: @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&display=swap'); */
-
 @font-face {
   font-family: 'Manrope';
   src: url('fonts/Manrope-Regular.woff') format('woff');
@@ -1235,7 +1230,6 @@ a.song-added-playlist-link:hover .song-added-playlist-icon {
 
 .forward {
   float: right;
-  /* margin-right: 0.4em; */
   z-index: 4;
   position: relative;
   color: #6add2b;
@@ -2331,11 +2325,9 @@ input:checked~label span.switch-labels-toggle:before {
   
   .coin-slot:after {
     content: 'i';
-    /* color: #bfbfbf; */
     color: #fff;
     font-family: 'Courier', serif;
     font-weight: bold;
-    /* font-size: 0.9em; */
     font-size: 1.2em;
     position: relative;
     top: -2px;
@@ -2444,20 +2436,12 @@ input:checked~label span.switch-labels-toggle:before {
     position: absolute;
     opacity: 50%;
     background: #6b99ca;
-background: -moz-linear-gradient(top,  #6b99ca 0%, #6f9aa4 3%, #dbe0c3 5%, #6b9fac 7%, #6498a9 7%, #79aab6 11%, #b2b099 15%, #66a5ac 15%, #4a798a 17%, #83c4ca 18%, #97c5cd 18%, #6b8692 20%, #5e94a5 20%, #36616d 24%, #6e9ebe 27%, #356e84 30%, #4c7a8d 31%, #438085 33%, #467d98 37%, #5db4c7 41%, #517983 42%, #5696a3 43%, #618994 45%, #448f96 50%, #377883 56%, #4f7b88 58%, #dddac1 59%, #454a93 61%, #5f8ba4 61%, #597b92 67%, #7aa3ad 73%, #3a6469 75%, #dbd4be 76%, #58748d 77%, #497e9e 82%, #6a8b9f 86%, #6e859e 87%, #88bddd 88%, #5a7678 89%, #587b80 94%, #5f898c 98%, #526474 100%);
-background: -webkit-linear-gradient(top,  #6b99ca 0%,#6f9aa4 3%,#dbe0c3 5%,#6b9fac 7%,#6498a9 7%,#79aab6 11%,#b2b099 15%,#66a5ac 15%,#4a798a 17%,#83c4ca 18%,#97c5cd 18%,#6b8692 20%,#5e94a5 20%,#36616d 24%,#6e9ebe 27%,#356e84 30%,#4c7a8d 31%,#438085 33%,#467d98 37%,#5db4c7 41%,#517983 42%,#5696a3 43%,#618994 45%,#448f96 50%,#377883 56%,#4f7b88 58%,#dddac1 59%,#454a93 61%,#5f8ba4 61%,#597b92 67%,#7aa3ad 73%,#3a6469 75%,#dbd4be 76%,#58748d 77%,#497e9e 82%,#6a8b9f 86%,#6e859e 87%,#88bddd 88%,#5a7678 89%,#587b80 94%,#5f898c 98%,#526474 100%);
-background: linear-gradient(to bottom,  #6b99ca 0%,#6f9aa4 3%,#dbe0c3 5%,#6b9fac 7%,#6498a9 7%,#79aab6 11%,#b2b099 15%,#66a5ac 15%,#4a798a 17%,#83c4ca 18%,#97c5cd 18%,#6b8692 20%,#5e94a5 20%,#36616d 24%,#6e9ebe 27%,#356e84 30%,#4c7a8d 31%,#438085 33%,#467d98 37%,#5db4c7 41%,#517983 42%,#5696a3 43%,#618994 45%,#448f96 50%,#377883 56%,#4f7b88 58%,#dddac1 59%,#454a93 61%,#5f8ba4 61%,#597b92 67%,#7aa3ad 73%,#3a6469 75%,#dbd4be 76%,#58748d 77%,#497e9e 82%,#6a8b9f 86%,#6e859e 87%,#88bddd 88%,#5a7678 89%,#587b80 94%,#5f898c 98%,#526474 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6b99ca', endColorstr='#526474',GradientType=0 );
-
+    background: -moz-linear-gradient(top,  #6b99ca 0%, #6f9aa4 3%, #dbe0c3 5%, #6b9fac 7%, #6498a9 7%, #79aab6 11%, #b2b099 15%, #66a5ac 15%, #4a798a 17%, #83c4ca 18%, #97c5cd 18%, #6b8692 20%, #5e94a5 20%, #36616d 24%, #6e9ebe 27%, #356e84 30%, #4c7a8d 31%, #438085 33%, #467d98 37%, #5db4c7 41%, #517983 42%, #5696a3 43%, #618994 45%, #448f96 50%, #377883 56%, #4f7b88 58%, #dddac1 59%, #454a93 61%, #5f8ba4 61%, #597b92 67%, #7aa3ad 73%, #3a6469 75%, #dbd4be 76%, #58748d 77%, #497e9e 82%, #6a8b9f 86%, #6e859e 87%, #88bddd 88%, #5a7678 89%, #587b80 94%, #5f898c 98%, #526474 100%);
+    background: -webkit-linear-gradient(top,  #6b99ca 0%,#6f9aa4 3%,#dbe0c3 5%,#6b9fac 7%,#6498a9 7%,#79aab6 11%,#b2b099 15%,#66a5ac 15%,#4a798a 17%,#83c4ca 18%,#97c5cd 18%,#6b8692 20%,#5e94a5 20%,#36616d 24%,#6e9ebe 27%,#356e84 30%,#4c7a8d 31%,#438085 33%,#467d98 37%,#5db4c7 41%,#517983 42%,#5696a3 43%,#618994 45%,#448f96 50%,#377883 56%,#4f7b88 58%,#dddac1 59%,#454a93 61%,#5f8ba4 61%,#597b92 67%,#7aa3ad 73%,#3a6469 75%,#dbd4be 76%,#58748d 77%,#497e9e 82%,#6a8b9f 86%,#6e859e 87%,#88bddd 88%,#5a7678 89%,#587b80 94%,#5f898c 98%,#526474 100%);
+    background: linear-gradient(to bottom,  #6b99ca 0%,#6f9aa4 3%,#dbe0c3 5%,#6b9fac 7%,#6498a9 7%,#79aab6 11%,#b2b099 15%,#66a5ac 15%,#4a798a 17%,#83c4ca 18%,#97c5cd 18%,#6b8692 20%,#5e94a5 20%,#36616d 24%,#6e9ebe 27%,#356e84 30%,#4c7a8d 31%,#438085 33%,#467d98 37%,#5db4c7 41%,#517983 42%,#5696a3 43%,#618994 45%,#448f96 50%,#377883 56%,#4f7b88 58%,#dddac1 59%,#454a93 61%,#5f8ba4 61%,#597b92 67%,#7aa3ad 73%,#3a6469 75%,#dbd4be 76%,#58748d 77%,#497e9e 82%,#6a8b9f 86%,#6e859e 87%,#88bddd 88%,#5a7678 89%,#587b80 94%,#5f898c 98%,#526474 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6b99ca', endColorstr='#526474',GradientType=0 );
     box-shadow: 0 0 28px #000 inset;
   }
-
-  /* Oh Safari you suck */
-  /* @media not all and (min-resolution:.001dpcm){@media {  
-    #home-bg .top-front {
-      box-shadow: none;
-    }
-  }} */
 
   #home-bg .jukebox {
     top: 131px; 

@@ -1,12 +1,6 @@
 import Switch from './Switch';
 
-const Filters = ({
-  mySongs,
-  checked,
-  filters,
-  toggleFilter,
-  setFiltersShowing,
-}) => {
+const Filters = ({ filters, toggleFilter, setFiltersShowing }) => {
   return (
     <div>
       <div

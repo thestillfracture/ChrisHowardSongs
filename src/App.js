@@ -8,7 +8,6 @@ import Modal from './pages/Modal';
 import { initVisualizer } from './functions/visualizer';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { MdKeyboardArrowUp } from 'react-icons/md';
-// import { initializeApp } from 'firebase/app';
 const App = () => {
   const [mySongs, setMySongs] = useState([]);
   const [playAll, setPlayAll] = useState(true);

@@ -8,15 +8,10 @@ const SongList = ({
   mySongs,
   isPlaying,
   setPlaying,
-  playAll,
-  mySongRef,
-  setPlayAll,
   startUp,
   rewind,
   pausePlaying,
   nextSongFn,
-  songEnded,
-  setBucket,
   yourSongOrder,
   setYourSongOrder,
   yourSongs,
@@ -28,7 +23,6 @@ const SongList = ({
       isPlaying.pause();
       setPlaying({});
     }
-    //setPlayAll(false);
     setMySongs(mySongs.map((song) => ({ ...song, playStatus: 'no' })));
   }, []);
 
@@ -42,17 +36,13 @@ const SongList = ({
                 key={song.id}
                 song={song}
                 bucket={bucket}
-                setBucket={setBucket}
                 setMySongs={setMySongs}
                 mySongs={mySongs}
                 isPlaying={isPlaying}
-                playAll={playAll}
-                mySongRef={mySongRef}
                 startUp={startUp}
                 rewind={rewind}
                 pausePlaying={pausePlaying}
                 nextSongFn={nextSongFn}
-                songEnded={songEnded}
                 yourSongOrder={yourSongOrder}
                 setYourSongOrder={setYourSongOrder}
                 yourSongs={yourSongs}

@@ -16,17 +16,14 @@ export const swipeFn = (midSlide, leftSlide, rightSlide) => {
     'touchend',
     function (event) {
       touchendX = event.changedTouches[0].screenX;
-      //console.log(touchstartX - touchendX);
       if (Math.abs(touchstartX - touchendX) > 60) {
-        // console.log(touchendX);
-        //handleGesture();
         const checkModal = document
           .querySelector('.App')
           .getAttribute('data-modal');
         if (touchendX < touchstartX && checkModal !== 'modal-open') {
           let curFocus = document
             .querySelector('.swiper-focused')
-            .getAttribute('id'); //.attr('id');
+            .getAttribute('id');
           switch (curFocus) {
             case 'swiper-1': // show #2
               midSlide();
@@ -35,7 +32,6 @@ export const swipeFn = (midSlide, leftSlide, rightSlide) => {
               rightSlide();
               break;
             default:
-            // console.log('end of carousel')
           }
         }
 
@@ -51,7 +47,6 @@ export const swipeFn = (midSlide, leftSlide, rightSlide) => {
               midSlide();
               break;
             default:
-            // console.log('end of carousel')
           }
         }
       }

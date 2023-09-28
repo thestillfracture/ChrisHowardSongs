@@ -7,7 +7,6 @@ import {
   FaExternalLinkAlt,
 } from 'react-icons/fa';
 import { MdOutlineReplay, MdCancel } from 'react-icons/md';
-import { DndProvider } from 'react-dnd';
 import Timer from '../components/Timer';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -77,7 +76,6 @@ const Song = ({
         removeSong(song);
         return;
       }
-      // if (mySongs.filter((song) => song.inYourSongs === true).length > 1) {
       if (yourSongOrder != null) {
         let firstCont;
         if (document.getElementById('your-songs-bucket').scrollTop <= 79) {
@@ -367,12 +365,6 @@ const Song = ({
     setYourSongs(newYourSongsSongs);
   };
 
-  // const mobileTouchStart = (e) => {
-  //   if (bucket === 'your-song-bucket') {
-  //     e.preventDefault();
-  //   }
-  // };
-
   return (
     <div
       className={
@@ -387,7 +379,6 @@ const Song = ({
     >
       <div
         className={`${
-          // song.playStatus === 'yes' || song.playStatus === 'paused'
           song.playStatus !== 'no'
             ? ['song', 'active-song', 'song-id-' + song.id].join(' ')
             : ['song', 'song-id-' + song.id].join(' ')
@@ -465,10 +456,6 @@ const Song = ({
             )}
 
             {song.inYourSongs === false &&
-              // localStorage.length === 0 &&
-              // JSON.parse(localStorage.getItem('songs')).filter(
-              //   (f) => f === song.id
-              // ).length > 0 &&
               (song.playStatus === 'yes' || song.playStatus === 'paused') && (
                 <button
                   className="add-to-playlist-button"

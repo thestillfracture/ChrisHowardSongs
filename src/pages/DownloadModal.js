@@ -1,9 +1,4 @@
-const DownloadModal = ({
-  showDownloadModal,
-  setDownloadModal,
-  zipAndDownload,
-  yourSongOrder,
-}) => {
+const DownloadModal = ({ setDownloadModal, zipAndDownload, yourSongOrder }) => {
   return (
     <div className="modal download-modal" style={{ zIndex: 40000 }}>
       <div onClick={() => setDownloadModal(false)} className="modal-close">
